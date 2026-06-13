@@ -18,6 +18,9 @@ public class Guardian {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String loginId;
+
     private String passwordHash;
     private String firstName;
     private String lastName;
