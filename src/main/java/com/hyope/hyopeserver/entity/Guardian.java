@@ -21,6 +21,8 @@ public class Guardian {
     private String passwordHash;
     private String firstName;
     private String lastName;
+    private String phoneNumber;
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
