@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Gender;
 import com.hyope.hyopeserver.entity.Recipient;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,10 @@ import java.time.LocalDate;
 @Getter
 public class RecipientResponseDto {
     private Long id;
+
+    @JsonProperty("guardian_id")
     private Long guardianId;
+
     private String firstName;
     private String lastName;
     private LocalDate birthDate;

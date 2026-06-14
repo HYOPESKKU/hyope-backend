@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.AdherenceRecord;
 import com.hyope.hyopeserver.entity.AdherenceType;
 import com.hyope.hyopeserver.entity.Slot;
@@ -14,7 +15,10 @@ import lombok.ToString;
 @Getter
 public class AdherenceRecordResponseDto {
     private Long id;
+
+    @JsonProperty("assessment_id")
     private Long assessmentId;
+
     private AdherenceType adherenceType;
     private Slot slot;
 

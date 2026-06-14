@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.CallLogEntry;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 public class CallLogEntryResponseDto {
+    @JsonProperty("call_log_id")
     private Long callLogId;
+
     private int sequence;
     private String question;
     private String answer;

@@ -5,11 +5,16 @@ import com.hyope.hyopeserver.entity.Guardian;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+@NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @ToString
-public class GuardianRequestDto { //클라이언트에서 받아온 것
+public class GuardianRequestDto {
     private String loginId;
     private String password;
     private String firstName;
@@ -18,18 +23,16 @@ public class GuardianRequestDto { //클라이언트에서 받아온 것
     private String email;
     private Gender gender;
 
-    //toEntity
-    public Guardian toEntity(){
-        return new Guardian(
-                null,
-                loginId,
-                password,
-                firstName,
-                lastName,
-                phoneNumber,
-                email,
-                gender,
-                LocalDateTime.now()
-        );
+    public Guardian toEntity(PasswordEncoder encoder){
+        return Guardian.builder()
+                .loginId(loginId)
+                .passwordHash(password != null ? encoder.encode(password) : null)
+                .firstName(firstName)
+                .lastName(lastName)
+                .phoneNumber(phoneNumber)
+                .email(email)
+                .gender(gender)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
 }

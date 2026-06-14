@@ -1,14 +1,12 @@
 package com.hyope.hyopeserver.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -31,4 +29,14 @@ public class Guardian {
     private Gender gender;
 
     private LocalDateTime createdAt;
+
+    public void patch(Guardian guardian) {
+        if (guardian.loginId != null) this.loginId = guardian.loginId;
+        if (guardian.passwordHash != null) this.passwordHash = guardian.passwordHash;
+        if (guardian.firstName != null) this.firstName = guardian.firstName;
+        if (guardian.lastName != null) this.lastName = guardian.lastName;
+        if (guardian.phoneNumber != null) this.phoneNumber = guardian.phoneNumber;
+        if (guardian.email != null) this.email = guardian.email;
+        if (guardian.gender != null) this.gender = guardian.gender;
+    }
 }

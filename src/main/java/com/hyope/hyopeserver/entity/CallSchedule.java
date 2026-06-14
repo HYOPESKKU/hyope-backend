@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
+import com.hyope.hyopeserver.dto.CallScheduleRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,12 @@ public class CallSchedule {
     private Recipient recipient;
 
     private LocalTime scheduledTime;
-    private boolean isActive;
+    private Boolean isActive;
     private LocalDateTime createdAt;
+
+    public void patch(CallScheduleRequestDto reqDto, Recipient recipient) {
+        if (recipient != null) this.recipient = recipient;
+        if (reqDto.getScheduledTime() != null) this.scheduledTime = reqDto.getScheduledTime();
+        if (reqDto.getIsActive() != null) this.isActive = reqDto.getIsActive();
+    }
 }

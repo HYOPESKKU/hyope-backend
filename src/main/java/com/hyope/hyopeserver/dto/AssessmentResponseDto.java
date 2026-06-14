@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Assessment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,10 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 public class AssessmentResponseDto {
+    @JsonProperty("recipient_id")
     private Long recipientId;
+
+    @JsonProperty("call_log_id")
     private Long callLogId;
 
     private LocalDateTime measuredAt;
