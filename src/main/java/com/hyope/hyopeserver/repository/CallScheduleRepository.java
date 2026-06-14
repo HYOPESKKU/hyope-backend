@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CallScheduleRepository extends JpaRepository<CallSchedule, Long> {
     List<CallSchedule> findByRecipientId(Long recipientId);
+    void deleteByRecipientId(Long recipientId);
 }

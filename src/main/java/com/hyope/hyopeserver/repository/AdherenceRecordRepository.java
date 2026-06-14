@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AdherenceRecordRepository extends JpaRepository<AdherenceRecord, Long> {
     List<AdherenceRecord> findByAssessmentId(Long assessmentId);
+    void deleteByAssessmentId(Long assessmentId);
 }

@@ -19,6 +19,9 @@ import java.util.List;
 public class RecipientService {
     private final GuardianRepository guardianRepository;
     private final RecipientRepository recipientRepository;
+    private final CallLogService callLogService;
+    private final CallScheduleService callScheduleService;
+    private final AssessmentService assessmentService;
 
     @Transactional
     public RecipientResponseDto create(Long guardianId, RecipientRequestDto reqDto){
@@ -65,5 +68,16 @@ public class RecipientService {
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 삭제 실패: 해당 돌봄 대상자가 없습니다."));
         recipientRepository.delete(target);
         return RecipientResponseDto.createRecipientResponseDto(target);
+    }
+
+    @Transactional
+    public void deleteAllByGuardianId(Long guardianId){
+        List<Recipient> recipients = recipientRepository.findByGuardianId(guardianId);
+        for (Recipient recipient : recipients) {
+            callLogService.deleteAllByRecipientId(recipient.getId());
+            callScheduleService.deleteAllByRecipientId(recipient.getId());
+            assessmentService.deleteAllByRecipientId(recipient.getId());
+        }
+        recipientRepository.deleteByGuardianId(guardianId);
     }
 }

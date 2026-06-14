@@ -1,7 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
 import com.hyope.hyopeserver.dto.RecipientRequestDto;
-import com.hyope.hyopeserver.dto.RecipientResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @AllArgsConstructor

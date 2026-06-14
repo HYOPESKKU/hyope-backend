@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
+import com.hyope.hyopeserver.dto.AdherenceRecordRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,5 +30,13 @@ public class AdherenceRecord {
 
     private boolean isNeeded;
     private boolean isDone;
+
+    // AdherenceRecord 엔티티
+    public void patch(AdherenceRecordRequestDto reqDto) {
+        if (reqDto.getAdherenceType() != null) this.adherenceType = reqDto.getAdherenceType();
+        if (reqDto.getSlot() != null) this.slot = reqDto.getSlot();
+        if (reqDto.getIsNeeded() != null) this.isNeeded = reqDto.getIsNeeded();
+        if (reqDto.getIsDone() != null) this.isDone = reqDto.getIsDone();
+    }
 }
 

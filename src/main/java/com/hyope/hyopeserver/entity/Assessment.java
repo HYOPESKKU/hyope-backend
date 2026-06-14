@@ -24,7 +24,7 @@ public class Assessment {
     private Recipient recipient;
 
     @OneToOne
-    @JoinColumn(name="call_log_id")
+    @JoinColumn(name="call_log_id", unique = true)
     private CallLog callLog;
 
     private LocalDateTime measuredAt;

@@ -67,4 +67,9 @@ public class CallScheduleService {
         callScheduleRepository.delete(target);
         return CallScheduleResponseDto.createCallScheduleResponseDto(target);
     }
+
+    @Transactional
+    public void deleteAllByRecipientId(Long recipientId){
+        callScheduleRepository.deleteByRecipientId(recipientId);
+    }
 }

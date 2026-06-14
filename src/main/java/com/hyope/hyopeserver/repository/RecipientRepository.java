@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RecipientRepository extends JpaRepository<Recipient, Long> {
     List<Recipient> findByGuardianId(Long guardianId); //JPA가 자동으로 WHERE guardian_id = ? 쿼리를 만듬
+    void deleteByGuardianId(Long guardianId);
 }

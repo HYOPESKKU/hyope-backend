@@ -18,6 +18,7 @@ import java.util.List;
 public class GuardianService {
     private final GuardianRepository guardianRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RecipientService recipientService;
 
     @Transactional
     public Guardian create(GuardianRequestDto dto){
@@ -45,8 +46,9 @@ public class GuardianService {
 
     @Transactional
     public Guardian delete(Long id){
-        Guardian target = guardianRepository.findById(id).orElse(null);
-        if(target == null) return null;
+        Guardian target = guardianRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("계정 삭제 실패"));
+        recipientService.deleteAllByGuardianId(id);
         guardianRepository.delete(target);
         return target;
     }

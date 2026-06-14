@@ -6,8 +6,12 @@ import com.hyope.hyopeserver.entity.AdherenceType;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.Slot;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class AdherenceRecordRequestDto {
@@ -16,8 +20,8 @@ public class AdherenceRecordRequestDto {
 
     private AdherenceType adherenceType;
     private Slot slot;
-    private boolean isNeeded;
-    private boolean isDone;
+    private Boolean isNeeded;
+    private Boolean isDone;
 
     public AdherenceRecord toEntity(Assessment assessment){
         return new AdherenceRecord(

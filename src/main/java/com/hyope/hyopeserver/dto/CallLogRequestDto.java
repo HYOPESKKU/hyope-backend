@@ -5,10 +5,15 @@ import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.entity.Status;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+@Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class CallLogRequestDto {
@@ -20,12 +25,13 @@ public class CallLogRequestDto {
     private Status status;
 
     public CallLog toEntity(Recipient recipient){
+        int calculatedDuration = (int) java.time.Duration.between(startedAt, endedAt).getSeconds();
         return new CallLog(
                 null,
                 recipient,
                 startedAt,
                 endedAt,
-                durationSec,
+                calculatedDuration,
                 status
         );
     }

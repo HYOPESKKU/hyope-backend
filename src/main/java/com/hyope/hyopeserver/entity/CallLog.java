@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
