@@ -40,8 +40,7 @@ public class Recipient {
 
     private LocalDateTime createdAt;
 
-    public void patch(RecipientRequestDto reqDto, Guardian guardian) {
-        if(guardian != null) this.guardian = guardian;
+    public void patch(RecipientRequestDto reqDto) {
         if(reqDto.getFirstName() != null) this.firstName = reqDto.getFirstName();
         if(reqDto.getLastName() != null) this.lastName = reqDto.getLastName();
         if(reqDto.getBirthDate() != null) this.birthDate = reqDto.getBirthDate();

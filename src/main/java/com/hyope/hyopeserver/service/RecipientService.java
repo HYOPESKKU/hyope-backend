@@ -52,12 +52,7 @@ public class RecipientService {
     public RecipientResponseDto update(Long id, RecipientRequestDto reqDto){
         Recipient target = recipientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 수정 실패: 해당 돌봄 대상자가 없습니다."));
-        Guardian guardian = null;
-        if (reqDto.getGuardianId() != null) {
-            guardian = guardianRepository.findById(reqDto.getGuardianId())
-                    .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 수정 실패: 보호자가 없습니다."));
-        }
-        target.patch(reqDto,guardian);
+        target.patch(reqDto); // 보호자 변경은 이 엔드포인트에서 허용하지 않음 (항상 null 전달)
         Recipient updated = recipientRepository.save(target);
         return RecipientResponseDto.createRecipientResponseDto(updated);
     }

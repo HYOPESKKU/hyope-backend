@@ -22,7 +22,6 @@ public class AssessmentService {
     private final RecipientRepository recipientRepository;
     private final CallLogRepository callLogRepository;
     private final AssessmentRepository assessmentRepository;
-    private final CallLogEntryService callLogEntryService;
     private final AdherenceRecordService adherenceRecordService;
 
     @Transactional
@@ -61,7 +60,7 @@ public class AssessmentService {
     public AssessmentResponseDto delete(Long id){
         Assessment target = assessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 삭제 실패: 해당 평가 지표가 없습니다."));
-        adherenceRecordService.deleteAllByAssessmentId(id);  // 추가
+        adherenceRecordService.deleteAllByAssessmentId(id);
         assessmentRepository.delete(target);
         return AssessmentResponseDto.createAssessmentResponseDto(target);
     }
@@ -70,7 +69,7 @@ public class AssessmentService {
     public void deleteAllByRecipientId(Long recipientId){
         List<Assessment> assessments = assessmentRepository.findByRecipientId(recipientId);
         for (Assessment assessment : assessments) {
-            adherenceRecordService.deleteAllByAssessmentId(assessment.getId());  // 추가
+            adherenceRecordService.deleteAllByAssessmentId(assessment.getId());
         }
         assessmentRepository.deleteByRecipientId(recipientId);
     }

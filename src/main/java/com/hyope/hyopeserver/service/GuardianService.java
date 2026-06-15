@@ -2,8 +2,8 @@ package com.hyope.hyopeserver.service;
 
 import com.hyope.hyopeserver.dto.request.GuardianRequestDto;
 import com.hyope.hyopeserver.entity.Guardian;
+import com.hyope.hyopeserver.exception.AuthenticationFailedException;
 import com.hyope.hyopeserver.repository.GuardianRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,13 +23,14 @@ public class GuardianService {
     @Transactional
     public Guardian create(GuardianRequestDto dto){
         if (guardianRepository.existsByLoginId(dto.getLoginId())) {
-            throw new IllegalStateException("이미 존재하는 로그인 ID입니다.");
+            throw new IllegalArgumentException("보호자 생성 실패: 이미 존재하는 로그인 ID입니다.");
         }
         return guardianRepository.save(dto.toEntity(passwordEncoder));
     }
 
     public Guardian read(Long id){
-        return guardianRepository.findById(id).orElse(null);
+        return guardianRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("보호자 조회 실패: 해당 보호자가 없습니다"));
     }
 
     public List<Guardian> readAll(){
@@ -39,7 +40,7 @@ public class GuardianService {
     @Transactional
     public Guardian update(Long id, GuardianRequestDto dto){
         Guardian target = guardianRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Guardian not found: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("보호자 수정 실패: 해당 보호자가 없습니다"));
         target.patch(dto.toEntity(passwordEncoder));
         return guardianRepository.save(target);
     }
@@ -47,7 +48,7 @@ public class GuardianService {
     @Transactional
     public Guardian delete(Long id){
         Guardian target = guardianRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("계정 삭제 실패"));
+                .orElseThrow(() -> new IllegalArgumentException("보호자 삭제 실패: 해당 보호자가 없습니다"));
         recipientService.deleteAllByGuardianId(id);
         guardianRepository.delete(target);
         return target;
@@ -55,11 +56,10 @@ public class GuardianService {
 
     public Guardian login(String loginId, String rawPassword){
         Guardian guardian = guardianRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계정입니다."));
+                .orElseThrow(() -> new AuthenticationFailedException("로그인 실패: 로그인 정보가 일치하지 않습니다."));
         if(!passwordEncoder.matches(rawPassword, guardian.getPasswordHash())){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new AuthenticationFailedException("로그인 실패: 로그인 정보가 일치하지 않습니다.");
         }
         return guardian;
     }
-
 }

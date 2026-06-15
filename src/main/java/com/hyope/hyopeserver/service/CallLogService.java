@@ -38,7 +38,7 @@ public class CallLogService {
     //한 건 조회
     public CallLogResponseDto read(Long id){
         CallLog callLog = callLogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("통화 로그 조회 실패: 해당 돌봄 대상자가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("통화 로그 조회 실패: 해당 통화 로그가 없습니다."));
         return CallLogResponseDto.createCallLogResponseDto(callLog);
     }
 
@@ -67,13 +67,6 @@ public class CallLogService {
                 .toList();
     }
 
-    //최근 건 조회
-    public CallLogResponseDto readLatest(Long recipientId){
-        CallLog callLog = callLogRepository.findFirstByRecipientIdOrderByStartedAtDesc(recipientId)
-                .orElseThrow(() -> new IllegalArgumentException("통화 로그 조회 실패: 기록이 없습니다."));
-        return CallLogResponseDto.createCallLogResponseDto(callLog);
-    }
-
     @Transactional
     public CallLogResponseDto delete(Long id){
         CallLog target = callLogRepository.findById(id)
@@ -87,7 +80,7 @@ public class CallLogService {
         List<CallLog> logs = callLogRepository.findByRecipientId(recipientId);
         for (CallLog log : logs) {
             callLogEntryService.deleteAllByCallLogId(log.getId());
-            assessmentService.deleteByCallLogId(log.getId());  // 추가
+            assessmentService.deleteByCallLogId(log.getId());
         }
         callLogRepository.deleteByRecipientId(recipientId);
     }
