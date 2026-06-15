@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.RecipientRequestDto;
-import com.hyope.hyopeserver.dto.RecipientResponseDto;
+import com.hyope.hyopeserver.dto.request.RecipientRequestDto;
+import com.hyope.hyopeserver.dto.response.RecipientResponseDto;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.repository.GuardianRepository;

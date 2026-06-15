@@ -1,6 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
-import com.hyope.hyopeserver.dto.CallScheduleRequestDto;
+import com.hyope.hyopeserver.dto.request.CallScheduleRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

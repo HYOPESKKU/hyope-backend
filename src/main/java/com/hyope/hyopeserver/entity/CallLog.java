@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
+import com.hyope.hyopeserver.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

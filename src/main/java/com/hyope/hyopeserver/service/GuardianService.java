@@ -1,6 +1,6 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.GuardianRequestDto;
+import com.hyope.hyopeserver.dto.request.GuardianRequestDto;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.repository.GuardianRepository;
 import jakarta.persistence.EntityNotFoundException;

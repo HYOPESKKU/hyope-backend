@@ -1,8 +1,9 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.request;
 
-import com.hyope.hyopeserver.entity.Gender;
+import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.Guardian;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class GuardianRequestDto {
     private String password;
     private String firstName;
     private String lastName;
+    private LocalDate birthDate;
     private String phoneNumber;
     private String email;
     private Gender gender;
@@ -32,6 +34,7 @@ public class GuardianRequestDto {
                 .phoneNumber(phoneNumber)
                 .email(email)
                 .gender(gender)
+                .birthDate(birthDate)
                 .createdAt(LocalDateTime.now())
                 .build();
     }

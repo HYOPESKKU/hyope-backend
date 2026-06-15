@@ -1,9 +1,10 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hyope.hyopeserver.entity.Gender;
+import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.entity.Recipient;
+import com.hyope.hyopeserver.entity.enums.RelationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class RecipientRequestDto {
     private LocalDate birthDate;
     private Gender gender;
     private String phoneNumber;
+    private RelationType relationToGuardian;
 
     public Recipient toEntity(Guardian guardian){
         if(!Objects.equals(guardian.getId(), guardianId)){
@@ -39,6 +41,7 @@ public class RecipientRequestDto {
                 birthDate,
                 gender,
                 phoneNumber,
+                relationToGuardian,
                 LocalDateTime.now()
         );
     }

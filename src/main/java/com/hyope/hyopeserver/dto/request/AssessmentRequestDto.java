@@ -1,9 +1,10 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;
+import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,9 @@ public class AssessmentRequestDto {
     private float healthRisk;
     private float cognitiveScore;
     private float overallRisk;
+    private RiskLevel riskLevel;
+    private String summary;
+    private String recommendation;
 
     public Assessment toEntity(Recipient recipient, CallLog callLog){
         if(!Objects.equals(recipient.getId(), recipientId)){
@@ -46,7 +50,11 @@ public class AssessmentRequestDto {
                 emotionalStability,
                 healthRisk,
                 cognitiveScore,
-                overallRisk
+                overallRisk,
+                riskLevel,
+                summary,
+                recommendation
         );
     }
 }
+

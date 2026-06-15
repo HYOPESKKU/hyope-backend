@@ -1,16 +1,15 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;
-import com.hyope.hyopeserver.entity.Status;
+import com.hyope.hyopeserver.entity.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @NoArgsConstructor

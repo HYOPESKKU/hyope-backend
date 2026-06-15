@@ -1,6 +1,8 @@
 package com.hyope.hyopeserver.entity;
 
-import com.hyope.hyopeserver.dto.RecipientRequestDto;
+import com.hyope.hyopeserver.dto.request.RecipientRequestDto;
+import com.hyope.hyopeserver.entity.enums.Gender;
+import com.hyope.hyopeserver.entity.enums.RelationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +34,10 @@ public class Recipient {
     private Gender gender;
 
     private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    private RelationType relationToGuardian;
+
     private LocalDateTime createdAt;
 
     public void patch(RecipientRequestDto reqDto, Guardian guardian) {
@@ -41,6 +47,7 @@ public class Recipient {
         if(reqDto.getBirthDate() != null) this.birthDate = reqDto.getBirthDate();
         if(reqDto.getGender() != null) this.gender = reqDto.getGender();
         if(reqDto.getPhoneNumber() != null) this.phoneNumber = reqDto.getPhoneNumber();
+        if(reqDto.getRelationToGuardian() != null) this.relationToGuardian = reqDto.getRelationToGuardian();
     }
 }
 

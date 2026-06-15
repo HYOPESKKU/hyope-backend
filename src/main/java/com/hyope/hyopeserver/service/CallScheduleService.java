@@ -1,6 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.*;
+import com.hyope.hyopeserver.dto.request.CallScheduleRequestDto;
+import com.hyope.hyopeserver.dto.response.CallScheduleResponseDto;
 import com.hyope.hyopeserver.entity.CallSchedule;
 import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.repository.CallScheduleRepository;

@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.CallSchedule;

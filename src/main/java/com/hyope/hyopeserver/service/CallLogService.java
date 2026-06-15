@@ -1,11 +1,10 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.CallLogRequestDto;
-import com.hyope.hyopeserver.dto.CallLogResponseDto;
+import com.hyope.hyopeserver.dto.request.CallLogRequestDto;
+import com.hyope.hyopeserver.dto.response.CallLogResponseDto;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;
-import com.hyope.hyopeserver.entity.Status;
-import com.hyope.hyopeserver.repository.CallLogEntryRepository;
+import com.hyope.hyopeserver.entity.enums.Status;
 import com.hyope.hyopeserver.repository.CallLogRepository;
 import com.hyope.hyopeserver.repository.RecipientRepository;
 import lombok.RequiredArgsConstructor;

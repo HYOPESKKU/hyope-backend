@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.AssessmentRequestDto;
-import com.hyope.hyopeserver.dto.AssessmentResponseDto;
+import com.hyope.hyopeserver.dto.request.AssessmentRequestDto;
+import com.hyope.hyopeserver.dto.response.AssessmentResponseDto;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;

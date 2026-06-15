@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.CallLogEntryRequestDto;
-import com.hyope.hyopeserver.dto.CallLogEntryResponseDto;
+import com.hyope.hyopeserver.dto.request.CallLogEntryRequestDto;
+import com.hyope.hyopeserver.dto.response.CallLogEntryResponseDto;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.CallLogEntry;
 import com.hyope.hyopeserver.repository.CallLogEntryRepository;

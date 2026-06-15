@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.AdherenceRecordRequestDto;
-import com.hyope.hyopeserver.dto.AdherenceRecordResponseDto;
+import com.hyope.hyopeserver.dto.request.AdherenceRecordRequestDto;
+import com.hyope.hyopeserver.dto.response.AdherenceRecordResponseDto;
 import com.hyope.hyopeserver.entity.AdherenceRecord;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.repository.AdherenceRecordRepository;

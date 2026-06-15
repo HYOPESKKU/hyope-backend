@@ -1,7 +1,8 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Assessment;
+import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,9 @@ public class AssessmentResponseDto {
     private float healthRisk;
     private float cognitiveScore;
     private float overallRisk;
+    private RiskLevel riskLevel;
+    private String summary;
+    private String recommendation;
 
     public static AssessmentResponseDto createAssessmentResponseDto(Assessment assessment){
         return new AssessmentResponseDto(
@@ -36,7 +40,10 @@ public class AssessmentResponseDto {
                 assessment.getEmotionalStability(),
                 assessment.getHealthRisk(),
                 assessment.getCognitiveScore(),
-                assessment.getOverallRisk()
+                assessment.getOverallRisk(),
+                assessment.getRiskLevel(),
+                assessment.getSummary(),
+                assessment.getRecommendation()
         );
     }
 }

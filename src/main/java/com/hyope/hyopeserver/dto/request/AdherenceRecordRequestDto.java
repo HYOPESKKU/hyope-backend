@@ -1,10 +1,10 @@
-package com.hyope.hyopeserver.dto;
+package com.hyope.hyopeserver.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.AdherenceRecord;
-import com.hyope.hyopeserver.entity.AdherenceType;
+import com.hyope.hyopeserver.entity.enums.AdherenceType;
 import com.hyope.hyopeserver.entity.Assessment;
-import com.hyope.hyopeserver.entity.Slot;
+import com.hyope.hyopeserver.entity.enums.Slot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

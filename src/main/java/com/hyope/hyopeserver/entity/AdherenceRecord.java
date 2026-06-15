@@ -1,6 +1,8 @@
 package com.hyope.hyopeserver.entity;
 
-import com.hyope.hyopeserver.dto.AdherenceRecordRequestDto;
+import com.hyope.hyopeserver.dto.request.AdherenceRecordRequestDto;
+import com.hyope.hyopeserver.entity.enums.AdherenceType;
+import com.hyope.hyopeserver.entity.enums.Slot;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

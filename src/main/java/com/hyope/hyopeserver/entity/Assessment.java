@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
+import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,4 +34,10 @@ public class Assessment {
     private float healthRisk;
     private float cognitiveScore;
     private float overallRisk;
+
+    @Enumerated(EnumType.STRING)
+    private RiskLevel riskLevel;
+
+    private String summary;
+    private String recommendation;
 }

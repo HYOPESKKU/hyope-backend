@@ -1,8 +1,10 @@
 package com.hyope.hyopeserver.entity;
 
+import com.hyope.hyopeserver.entity.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,12 +24,13 @@ public class Guardian {
     private String passwordHash;
     private String firstName;
     private String lastName;
-    private String phoneNumber;
-    private String email;
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private String phoneNumber;
+    private String email;
     private LocalDateTime createdAt;
 
     public void patch(Guardian guardian) {
@@ -38,5 +41,6 @@ public class Guardian {
         if (guardian.phoneNumber != null) this.phoneNumber = guardian.phoneNumber;
         if (guardian.email != null) this.email = guardian.email;
         if (guardian.gender != null) this.gender = guardian.gender;
+        if(guardian.birthDate != null) this.birthDate = guardian.birthDate;
     }
 }
