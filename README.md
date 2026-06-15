@@ -84,6 +84,9 @@
 | health_risk | FLOAT | | 건강 위험도 |
 | cognitive_score | FLOAT | | 인지 점수 |
 | overall_risk | FLOAT | | 종합 위험도 |
+| risk_level | ENUM | OBSERVE, CAUTION, WARNING, HIGH | 종합 위험도 |
+| summary | TEXT | | 돌봄 대상자 상태 요약 |
+| recommendation | TEXT | | 보호자 행동 권고 |
 
 ### adherence_record (식사/복약 이행 기록)
 
@@ -98,4 +101,5 @@
 
 ## ERD diagram
 
-<img width="2207" height="719" alt="Untitled-2" src="https://github.com/user-attachments/assets/61116273-fb86-4d2f-9e61-265d52ecee78" />
+<img width="2207" height="815" alt="Untitled-3" src="https://github.com/user-attachments/assets/73ca101d-489a-4183-827a-0d76c1082a70" />
+
