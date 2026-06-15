@@ -104,3 +104,9 @@
 ## ERD diagram
 
 <img width="2207" height="815" alt="Untitled-4" src="https://github.com/user-attachments/assets/5a070afb-b964-45e3-bd9f-ad13691d399f" />
+
+## 데이터 파이프라인
+
+<img height="800" alt="llm_spring_flutter_pipeline" src="https://github.com/user-attachments/assets/d8f0b716-ca4d-49a8-ab3e-cb460c40b39a" />
+
+
