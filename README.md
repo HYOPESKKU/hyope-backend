@@ -21,9 +21,10 @@
 | password_hash | VARCHAR | | 비밀번호 해시 |
 | first_name | VARCHAR | | 이름 |
 | last_name | VARCHAR | | 성 |
+| birth_date | DATE | | 생년월일 |
+| gender | ENUM | MALE, FEMALE | 성별 |
 | phone_number | VARCHAR | | 전화번호 |
 | email | VARCHAR | | 이메일 |
-| gender | ENUM | MALE, FEMALE | 성별 |
 | created_at | DATETIME | | 생성일시 |
 
 ### recipient (피보호자)
@@ -37,6 +38,7 @@
 | birth_date | DATE | | 생년월일 |
 | gender | ENUM | MALE, FEMALE | 성별 |
 | phone_number | VARCHAR | | 전화번호 |
+| relation_to_guardian | ENUM | CHILD, PARENT, SPOUSE... | 보호자와의 관계 |
 | created_at | DATETIME | | 생성일시 |
 
 ### call_schedule (전화 일정)
@@ -101,5 +103,4 @@
 
 ## ERD diagram
 
-<img width="2207" height="815" alt="Untitled-3" src="https://github.com/user-attachments/assets/73ca101d-489a-4183-827a-0d76c1082a70" />
-
+<img width="2207" height="815" alt="Untitled-4" src="https://github.com/user-attachments/assets/5a070afb-b964-45e3-bd9f-ad13691d399f" />
