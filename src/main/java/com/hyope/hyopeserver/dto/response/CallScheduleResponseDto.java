@@ -19,7 +19,7 @@ public class CallScheduleResponseDto {
     private Boolean isActive;
     private LocalTime scheduledTime;
 
-    public static CallScheduleResponseDto createCallScheduleResponseDto(CallSchedule callSchedule){
+    public static CallScheduleResponseDto from(CallSchedule callSchedule){
         return new CallScheduleResponseDto(
                 callSchedule.getId(),
                 callSchedule.getRecipient().getId(),

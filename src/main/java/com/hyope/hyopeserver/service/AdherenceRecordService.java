@@ -26,13 +26,13 @@ public class AdherenceRecordService {
                 .orElseThrow(() -> new IllegalArgumentException("이행 기록 생성 실패: 해당 평가 정보가 없습니다."));
         AdherenceRecord adherenceRecord = reqDto.toEntity(assessment);
         AdherenceRecord created = adherenceRecordRepository.save(adherenceRecord);
-        return AdherenceRecordResponseDto.createAdherenceRecordResponseDto(created);
+        return AdherenceRecordResponseDto.from(created);
     }
 
     public AdherenceRecordResponseDto read(Long id){
         AdherenceRecord adherenceRecord = adherenceRecordRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("이행 기록 조회 실패: 해당 이행 기록이 없습니다."));
-        return AdherenceRecordResponseDto.createAdherenceRecordResponseDto(adherenceRecord);
+        return AdherenceRecordResponseDto.from(adherenceRecord);
     }
 
     public List<AdherenceRecordResponseDto> readAll(Long assessmentId){
@@ -41,7 +41,7 @@ public class AdherenceRecordService {
         }
         return adherenceRecordRepository.findByAssessmentId(assessmentId)
                 .stream()
-                .map(AdherenceRecordResponseDto::createAdherenceRecordResponseDto)
+                .map(AdherenceRecordResponseDto::from)
                 .toList();
     }
 
@@ -51,7 +51,7 @@ public class AdherenceRecordService {
                 .orElseThrow(() -> new IllegalArgumentException("이행 기록 수정 실패: 해당 이행 기록이 없습니다."));
         target.patch(reqDto);
         AdherenceRecord updated = adherenceRecordRepository.save(target);
-        return AdherenceRecordResponseDto.createAdherenceRecordResponseDto(updated);
+        return AdherenceRecordResponseDto.from(updated);
     }
 
     @Transactional
@@ -59,7 +59,7 @@ public class AdherenceRecordService {
         AdherenceRecord target = adherenceRecordRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("이행 기록 삭제 실패: 해당 이행 기록이 없습니다."));
         adherenceRecordRepository.delete(target);
-        return AdherenceRecordResponseDto.createAdherenceRecordResponseDto(target);
+        return AdherenceRecordResponseDto.from(target);
     }
 
     @Transactional

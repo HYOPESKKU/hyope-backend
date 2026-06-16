@@ -37,13 +37,13 @@ public class AssessmentService {
 
         Assessment assessment = reqDto.toEntity(recipient, callLog);
         Assessment created = assessmentRepository.save(assessment);
-        return AssessmentResponseDto.createAssessmentResponseDto(created);
+        return AssessmentResponseDto.from(created);
     }
 
     public AssessmentResponseDto read(Long id){
         Assessment assessment = assessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 조회 실패: 해당 평가 지표가 없습니다."));
-        return AssessmentResponseDto.createAssessmentResponseDto(assessment);
+        return AssessmentResponseDto.from(assessment);
     }
 
     public List<AssessmentResponseDto> readAll(Long recipientId){
@@ -52,7 +52,7 @@ public class AssessmentService {
         }
         return assessmentRepository.findByRecipientId(recipientId)
                 .stream()
-                .map(AssessmentResponseDto::createAssessmentResponseDto)
+                .map(AssessmentResponseDto::from)
                 .toList();
     }
 
@@ -62,7 +62,7 @@ public class AssessmentService {
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 삭제 실패: 해당 평가 지표가 없습니다."));
         adherenceRecordService.deleteAllByAssessmentId(id);
         assessmentRepository.delete(target);
-        return AssessmentResponseDto.createAssessmentResponseDto(target);
+        return AssessmentResponseDto.from(target);
     }
 
     @Transactional

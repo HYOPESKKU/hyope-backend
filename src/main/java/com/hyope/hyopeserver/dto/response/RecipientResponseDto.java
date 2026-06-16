@@ -28,7 +28,7 @@ public class RecipientResponseDto {
     private String phoneNumber;
     private RelationType relationToGuardian;
 
-    public static RecipientResponseDto createRecipientResponseDto(Recipient recipient){
+    public static RecipientResponseDto from(Recipient recipient){
         return new RecipientResponseDto(
                 recipient.getId(),
                 recipient.getGuardian().getId(),

@@ -28,7 +28,7 @@ public class CallLogEntryService {
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 생성 실패: 해당 통화 로그가 없습니다."));
         CallLogEntry callLogEntry = reqDto.toEntity(callLog);
         CallLogEntry created = callLogEntryRepository.save(callLogEntry);
-        return CallLogEntryResponseDto.createCallLogEntryResponseDto(created);
+        return CallLogEntryResponseDto.from(created);
     }
 
     //일괄 생성 (bulk create)
@@ -41,7 +41,7 @@ public class CallLogEntryService {
                 .toList();
         List<CallLogEntry> created = callLogEntryRepository.saveAll(entries);
         return created.stream()
-                .map(CallLogEntryResponseDto::createCallLogEntryResponseDto)
+                .map(CallLogEntryResponseDto::from)
                 .toList();
     }
 
@@ -49,7 +49,7 @@ public class CallLogEntryService {
     public CallLogEntryResponseDto read(Long id){
         CallLogEntry callLogEntry = callLogEntryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 조회 실패: 해당 통화 로그가 없습니다."));
-        return CallLogEntryResponseDto.createCallLogEntryResponseDto(callLogEntry);
+        return CallLogEntryResponseDto.from(callLogEntry);
     }
 
     //모두 조회
@@ -58,7 +58,7 @@ public class CallLogEntryService {
             throw new IllegalArgumentException("통화 기록 목록 조회 실패: 해당 통화 로그가 없습니다.");
         }
         return callLogEntryRepository.findByCallLogId(callLogId, pageable)
-                .map(CallLogEntryResponseDto::createCallLogEntryResponseDto);
+                .map(CallLogEntryResponseDto::from);
     }
 
     //CallLog 단위로 전체 대화(질문-답변) 한 번에 보기
@@ -68,7 +68,7 @@ public class CallLogEntryService {
         }
         return callLogEntryRepository.findByCallLogIdOrderBySequenceAsc(callLogId)
                 .stream()
-                .map(CallLogEntryResponseDto::createCallLogEntryResponseDto)
+                .map(CallLogEntryResponseDto::from)
                 .toList();
     }
 
@@ -77,7 +77,7 @@ public class CallLogEntryService {
         CallLogEntry target = callLogEntryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 조회 실패: 해당 통화 로그가 없습니다."));
         callLogEntryRepository.delete(target);
-        return CallLogEntryResponseDto.createCallLogEntryResponseDto(target);
+        return CallLogEntryResponseDto.from(target);
     }
 
     @Transactional

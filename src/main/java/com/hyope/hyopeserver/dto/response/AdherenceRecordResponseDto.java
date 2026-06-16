@@ -25,7 +25,7 @@ public class AdherenceRecordResponseDto {
     private boolean isNeeded;
     private boolean isDone;
 
-    public static AdherenceRecordResponseDto createAdherenceRecordResponseDto(AdherenceRecord adherenceRecord){
+    public static AdherenceRecordResponseDto from(AdherenceRecord adherenceRecord){
         return new AdherenceRecordResponseDto(
                 adherenceRecord.getId(),
                 adherenceRecord.getAssessment().getId(),

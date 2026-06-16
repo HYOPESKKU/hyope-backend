@@ -26,13 +26,13 @@ public class CallScheduleService {
                 .orElseThrow(() -> new IllegalArgumentException("통화 스케줄 생성 실패: 돌봄 대상자가 없습니다."));
         CallSchedule callSchedule = reqDto.toEntity(recipient);
         CallSchedule created = callScheduleRepository.save(callSchedule);
-        return CallScheduleResponseDto.createCallScheduleResponseDto(created);
+        return CallScheduleResponseDto.from(created);
     }
 
     public CallScheduleResponseDto read(Long id){
         CallSchedule callSchedule = callScheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 스케줄 조회 실패: 해당 통화 스케줄이 없습니다."));
-        return CallScheduleResponseDto.createCallScheduleResponseDto(callSchedule);
+        return CallScheduleResponseDto.from(callSchedule);
     }
 
     public List<CallScheduleResponseDto> readAll(Long recipientId){
@@ -41,7 +41,7 @@ public class CallScheduleService {
         }
         return callScheduleRepository.findByRecipientId(recipientId)
                 .stream()
-                .map(CallScheduleResponseDto::createCallScheduleResponseDto)
+                .map(CallScheduleResponseDto::from)
                 .toList();
     }
 
@@ -58,7 +58,7 @@ public class CallScheduleService {
 
         target.patch(reqDto, recipient);
         CallSchedule updated = callScheduleRepository.save(target);
-        return CallScheduleResponseDto.createCallScheduleResponseDto(updated);
+        return CallScheduleResponseDto.from(updated);
     }
 
     @Transactional
@@ -66,7 +66,7 @@ public class CallScheduleService {
         CallSchedule target = callScheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 스케줄 삭제 실패: 해당 통화 스케줄이 없습니다."));
         callScheduleRepository.delete(target);
-        return CallScheduleResponseDto.createCallScheduleResponseDto(target);
+        return CallScheduleResponseDto.from(target);
     }
 
     @Transactional

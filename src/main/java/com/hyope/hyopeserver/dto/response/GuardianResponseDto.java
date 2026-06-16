@@ -2,7 +2,6 @@ package com.hyope.hyopeserver.dto.response;
 
 import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.Guardian;
-import com.hyope.hyopeserver.entity.enums.RelationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

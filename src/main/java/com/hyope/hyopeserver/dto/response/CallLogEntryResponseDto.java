@@ -22,7 +22,7 @@ public class CallLogEntryResponseDto {
     private String answer;
     private LocalDateTime askedAt;
 
-    public static CallLogEntryResponseDto createCallLogEntryResponseDto (CallLogEntry callLogEntry){
+    public static CallLogEntryResponseDto from(CallLogEntry callLogEntry){
         return new CallLogEntryResponseDto(
             callLogEntry.getCallLog().getId(),
             callLogEntry.getSequence(),

@@ -23,7 +23,7 @@ public class CallLogResponseDto {
     private int durationSec;
     private Status status;
 
-    public static CallLogResponseDto createCallLogResponseDto(CallLog callLog){
+    public static CallLogResponseDto from(CallLog callLog){
         return new CallLogResponseDto(
                 callLog.getId(),
                 callLog.getRecipient().getId(),

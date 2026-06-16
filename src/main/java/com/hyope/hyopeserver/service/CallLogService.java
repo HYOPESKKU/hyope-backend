@@ -32,20 +32,20 @@ public class CallLogService {
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 정보 생성 실패: 해당 돌봄 대상자가 없습니다."));
         CallLog callLog = reqDto.toEntity(recipient);
         CallLog created = callLogRepository.save(callLog);
-        return CallLogResponseDto.createCallLogResponseDto(created);
+        return CallLogResponseDto.from(created);
     }
 
     //한 건 조회
     public CallLogResponseDto read(Long id){
         CallLog callLog = callLogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 조회 실패: 해당 통화 로그가 없습니다."));
-        return CallLogResponseDto.createCallLogResponseDto(callLog);
+        return CallLogResponseDto.from(callLog);
     }
 
     //모두 조회
     public Page<CallLogResponseDto> readAll(Long recipientId, Pageable pageable){
         return callLogRepository.findByRecipientId(recipientId, pageable)
-                .map(CallLogResponseDto::createCallLogResponseDto);
+                .map(CallLogResponseDto::from);
     }
 
     //날짜별 조회
@@ -55,7 +55,7 @@ public class CallLogService {
         }
         return callLogRepository.findByRecipientIdAndStartedAtBetween(recipientId, from, to)
                 .stream()
-                .map(CallLogResponseDto::createCallLogResponseDto)
+                .map(CallLogResponseDto::from)
                 .toList();
     }
 
@@ -63,7 +63,7 @@ public class CallLogService {
     public List<CallLogResponseDto> readByStatus(Long recipientId, Status status){
         return callLogRepository.findByRecipientIdAndStatus(recipientId, status)
                 .stream()                                    // List -> Stream 변환
-                .map(CallLogResponseDto::createCallLogResponseDto)
+                .map(CallLogResponseDto::from)
                 .toList();
     }
 
@@ -72,7 +72,7 @@ public class CallLogService {
         CallLog target = callLogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 삭제 실패: 해당 통화 로그가 없습니다."));
         callLogRepository.delete(target);
-        return CallLogResponseDto.createCallLogResponseDto(target);
+        return CallLogResponseDto.from(target);
     }
 
     @Transactional

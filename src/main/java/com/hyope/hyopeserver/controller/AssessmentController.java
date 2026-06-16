@@ -16,18 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 public class AssessmentController {
     private final AssessmentService assessmentService;
-
     //GET
     @GetMapping("/assessment/{id}")
     public ResponseEntity<AssessmentResponseDto> read(@PathVariable Long id){
         return ResponseEntity.ok(assessmentService.read(id));
     }
-
     @GetMapping("/recipient/{recipientId}/assessment")
     public ResponseEntity<List<AssessmentResponseDto>> readAll(@PathVariable Long recipientId){
         return ResponseEntity.ok(assessmentService.readAll(recipientId));
     }
-
     //POST
     @PostMapping("/recipient/{recipientId}/call-log/{callLogId}/assessment")
     public ResponseEntity<AssessmentResponseDto> create(@PathVariable Long recipientId,
@@ -36,7 +33,6 @@ public class AssessmentController {
         AssessmentResponseDto created = assessmentService.create(recipientId, callLogId, reqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
-
     //DELETE
     @DeleteMapping("/assessment/{id}")
     public ResponseEntity<AssessmentResponseDto> delete(@PathVariable Long id){

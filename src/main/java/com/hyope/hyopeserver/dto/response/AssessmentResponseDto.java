@@ -31,7 +31,7 @@ public class AssessmentResponseDto {
     private String summary;
     private String recommendation;
 
-    public static AssessmentResponseDto createAssessmentResponseDto(Assessment assessment){
+    public static AssessmentResponseDto from(Assessment assessment){
         return new AssessmentResponseDto(
                 assessment.getRecipient().getId(),
                 assessment.getCallLog().getId(),
