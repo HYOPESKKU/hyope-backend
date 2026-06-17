@@ -3,6 +3,7 @@ package com.hyope.hyopeserver.entity;
 import com.hyope.hyopeserver.dto.request.RecipientRequestDto;
 import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.enums.RelationType;
+import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,6 +39,7 @@ public class Recipient {
     @Enumerated(EnumType.STRING)
     private RelationType relationToGuardian;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     public void patch(RecipientRequestDto reqDto) {

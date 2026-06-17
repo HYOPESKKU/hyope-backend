@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -27,6 +28,8 @@ public class CallSchedule {
 
     private LocalTime scheduledTime;
     private Boolean isActive;
+
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     public void patch(CallScheduleRequestDto reqDto, Recipient recipient) {

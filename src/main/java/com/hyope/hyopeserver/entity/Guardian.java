@@ -3,6 +3,7 @@ package com.hyope.hyopeserver.entity;
 import com.hyope.hyopeserver.entity.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,6 +32,8 @@ public class Guardian {
 
     private String phoneNumber;
     private String email;
+
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     public void patch(Guardian guardian) {
