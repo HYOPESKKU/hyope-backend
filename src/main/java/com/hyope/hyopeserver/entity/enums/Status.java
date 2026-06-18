@@ -1,5 +1,5 @@
 package com.hyope.hyopeserver.entity.enums;
 
 public enum Status{
-    COMPLETED, FAILED, MISSED
+    COMPLETED, FAILED, MISSED, ANALYZING
 }

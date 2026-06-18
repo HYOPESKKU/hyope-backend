@@ -17,4 +17,5 @@ public interface CallLogRepository extends JpaRepository<CallLog, Long> {
     List<CallLog> findByRecipientIdAndStatus(Long recipientId, Status status);
     Optional<CallLog> findFirstByRecipientIdOrderByStartedAtDesc(Long recipientId);
     void deleteByRecipientId(Long recipientId);
+    boolean existsByRecipientIdAndStartedAtAfter(Long recipientId, LocalDateTime dateTime);
 }

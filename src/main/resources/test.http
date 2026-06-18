@@ -52,8 +52,8 @@ POST http://localhost:8080/guardian/login
 Content-Type: application/json
 
 {
-  "loginId": "user1",
-  "password": "12345"
+  "loginId": "user2",
+  "password": "abcd1234"
 }
 
 ###
@@ -84,7 +84,7 @@ POST http://localhost:8080/guardian/1/recipient
 Content-Type: application/json
 
 {
-  "guardianId": 1,
+  "guardian_id": 1,
   "firstName": "SOON JA",
   "lastName": "KIM",
   "birthDate": "1950-03-15",
