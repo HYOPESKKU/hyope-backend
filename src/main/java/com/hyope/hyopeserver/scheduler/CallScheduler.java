@@ -46,7 +46,7 @@ public class CallScheduler {
             }
 
             log.info("AI 서버에 통화 요청 - recipientId={}", recipientId);
-            aiClientService.requestCall(schedule.getRecipient());
+            aiClientService.requestCall(schedule);
         }
     }
 }

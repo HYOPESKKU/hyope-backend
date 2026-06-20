@@ -31,7 +31,8 @@ public class CallScheduleRequestDto {
                 null,
                 recipient,
                 scheduledTime,
-                isActive != null ? isActive : true, // 기본값 정책에 따라 조정
+                isActive != null ? isActive : true,
+                null,
                 LocalDateTime.now()
         );
     }

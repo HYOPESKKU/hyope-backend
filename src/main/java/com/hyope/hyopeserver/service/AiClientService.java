@@ -1,18 +1,26 @@
 package com.hyope.hyopeserver.service;
 
+import com.hyope.hyopeserver.entity.CallSchedule;
 import com.hyope.hyopeserver.entity.Recipient;
+import com.hyope.hyopeserver.entity.enums.Status;
+import com.hyope.hyopeserver.repository.CallScheduleRepository;
 import io.netty.channel.ChannelOption;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AiClientService {
+
+    private final CallScheduleRepository callScheduleRepository;
 
     private final WebClient webClient = WebClient.builder()
             .baseUrl("http://localhost:8000")
@@ -23,22 +31,26 @@ public class AiClientService {
             ))
             .build();
 
-    public void requestCall(Recipient recipient) {
-        try {
-            webClient.post()
-                    .uri("/call")  // FastAPI 엔드포인트 (협의 후 수정)
-                    .bodyValue(new CallRequestBody(recipient.getId(), recipient.getPhoneNumber()))
-                    .retrieve()
-                    .bodyToMono(Void.class)
-                    .subscribe(
-                            null,
-                            error -> log.error("AI 서버 호출 실패: recipientId={}, error={}", recipient.getId(), error.getMessage())
-                    );
-        } catch (Exception e) {
-            log.error("AI 서버 호출 중 예외 발생: recipientId={}", recipient.getId(), e);
-        }
+    public void requestCall(CallSchedule schedule) {
+        Recipient recipient = schedule.getRecipient();
+        webClient.post()
+                .uri("/call")
+                .bodyValue(new CallRequestBody(recipient.getId(), recipient.getPhoneNumber()))
+                .retrieve()
+                .bodyToMono(Void.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .doAfterRetry(signal -> log.warn("AI 서버 호출 재시도 {}/3: recipientId={}, error={}",
+                                signal.totalRetries() + 1, recipient.getId(), signal.failure().getMessage())))
+                .doOnError(error -> {
+                    log.error("AI 서버 호출 최종 실패 (3회 재시도 소진): recipientId={}, error={}", recipient.getId(), error.getMessage());
+                    schedule.updateLastCallStatus(Status.FAILED);
+                    callScheduleRepository.save(schedule);
+                })
+                .subscribe(
+                        null,
+                        error -> {} // doOnError에서 처리하므로 여기서는 무시
+                );
     }
 
-    // FastAPI로 보내는 요청 body (내부 record)
     private record CallRequestBody(Long recipientId, String phoneNumber) {}
 }
