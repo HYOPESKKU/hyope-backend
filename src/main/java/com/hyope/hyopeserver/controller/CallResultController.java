@@ -14,7 +14,7 @@ public class CallResultController {
 
     private final CallResultService callResultService;
 
-    @PostMapping("/call-results")
+    @PostMapping("/internal/call-results")
     public ResponseEntity<Void> receiveCallResult(@RequestBody AiCallResult dto) {
         log.info("AI 분석 결과 수신 - recipientId={}", dto.getRecipientId());
         callResultService.saveAll(dto);

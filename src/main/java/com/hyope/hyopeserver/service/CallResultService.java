@@ -23,6 +23,25 @@ public class CallResultService {
 
     @Transactional
     public void saveAll(AiCallResult dto) {
+        if (dto.getRecipientId() == null) {
+            throw new IllegalArgumentException("통화 결과 저장 실패: recipientId가 없습니다.");
+        }
+        if (dto.getCallLog() == null) {
+            throw new IllegalArgumentException("통화 결과 저장 실패: callLog 데이터가 없습니다.");
+        }
+        if (dto.getCallLog().getStartedAt() == null || dto.getCallLog().getEndedAt() == null) {
+            throw new IllegalArgumentException("통화 결과 저장 실패: callLog의 시작/종료 시각이 없습니다.");
+        }
+        if (dto.getAssessment() == null) {
+            throw new IllegalArgumentException("통화 결과 저장 실패: assessment 데이터가 없습니다.");
+        }
+        if (dto.getCallLogEntries() == null) {
+            throw new IllegalArgumentException("통화 결과 저장 실패: callLogEntries 데이터가 없습니다.");
+        }
+        if (dto.getAdherenceRecords() == null) {
+            throw new IllegalArgumentException("통화 결과 저장 실패: adherenceRecords 데이터가 없습니다.");
+        }
+
         // 1. Recipient 조회
         Recipient recipient = recipientRepository.findById(dto.getRecipientId())
                 .orElseThrow(() -> new IllegalArgumentException("Recipient not found: " + dto.getRecipientId()));
@@ -30,57 +49,52 @@ public class CallResultService {
         // 2. CallLog 저장
         AiCallResult.CallLogData callLogData = dto.getCallLog();
         int durationSec = (int) Duration.between(callLogData.getStartedAt(), callLogData.getEndedAt()).getSeconds();
-        CallLog callLog = new CallLog(
-                null,
-                recipient,
-                callLogData.getStartedAt(),
-                callLogData.getEndedAt(),
-                durationSec,
-                callLogData.getStatus()
-        );
+        CallLog callLog = CallLog.builder()
+                .recipient(recipient)
+                .startedAt(callLogData.getStartedAt())
+                .endedAt(callLogData.getEndedAt())
+                .durationSec(durationSec)
+                .status(callLogData.getStatus())
+                .build();
         CallLog savedCallLog = callLogRepository.save(callLog);
 
         // 3. CallLogEntry 저장
         dto.getCallLogEntries().forEach(entry -> {
-            CallLogEntry callLogEntry = new CallLogEntry(
-                    null,
-                    savedCallLog,
-                    entry.getSequence(),
-                    entry.getQuestion(),
-                    entry.getAnswer(),
-                    entry.getAskedAt()
-            );
+            CallLogEntry callLogEntry = CallLogEntry.builder()
+                    .callLog(savedCallLog)
+                    .sequence(entry.getSequence())
+                    .question(entry.getQuestion())
+                    .answer(entry.getAnswer())
+                    .askedAt(entry.getAskedAt())
+                    .build();
             callLogEntryRepository.save(callLogEntry);
         });
 
         // 4. Assessment 저장
         AiCallResult.AssessmentData assessmentData = dto.getAssessment();
-        Assessment assessment = new Assessment(
-                null,
-                recipient,
-                savedCallLog,
-                assessmentData.getMeasuredAt(),
-                assessmentData.getDepressionScore(),
-                assessmentData.getEmotionalStability(),
-                assessmentData.getHealthRisk(),
-                assessmentData.getCognitiveScore(),
-                assessmentData.getOverallRisk(),
-                assessmentData.getRiskLevel(),
-                assessmentData.getSummary(),
-                assessmentData.getRecommendation()
-        );
+        Assessment assessment = Assessment.builder()
+                .callLog(savedCallLog)
+                .measuredAt(assessmentData.getMeasuredAt())
+                .depressionScore(assessmentData.getDepressionScore())
+                .emotionalStability(assessmentData.getEmotionalStability())
+                .healthRisk(assessmentData.getHealthRisk())
+                .cognitiveScore(assessmentData.getCognitiveScore())
+                .overallRisk(assessmentData.getOverallRisk())
+                .riskLevel(assessmentData.getRiskLevel())
+                .summary(assessmentData.getSummary())
+                .recommendation(assessmentData.getRecommendation())
+                .build();
         Assessment savedAssessment = assessmentRepository.save(assessment);
 
         // 5. AdherenceRecord 저장
         dto.getAdherenceRecords().forEach(record -> {
-            AdherenceRecord adherenceRecord = new AdherenceRecord(
-                    null,
-                    savedAssessment,
-                    record.getAdherenceType(),
-                    record.getSlot(),
-                    record.isNeeded(),
-                    record.isDone()
-            );
+            AdherenceRecord adherenceRecord = AdherenceRecord.builder()
+                    .assessment(savedAssessment)
+                    .adherenceType(record.getAdherenceType())
+                    .slot(record.getSlot())
+                    .isNeeded(record.isNeeded())
+                    .isDone(record.isDone())
+                    .build();
             adherenceRecordRepository.save(adherenceRecord);
         });
 

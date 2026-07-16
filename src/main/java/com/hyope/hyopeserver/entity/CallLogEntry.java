@@ -2,6 +2,7 @@ package com.hyope.hyopeserver.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,6 +10,7 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

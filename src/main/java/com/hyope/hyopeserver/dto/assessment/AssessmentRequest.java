@@ -3,7 +3,6 @@ package com.hyope.hyopeserver.dto.assessment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
-import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,19 +35,18 @@ public class AssessmentRequest {
         if(!Objects.equals(callLog.getId(), callLogId)){
             throw new IllegalArgumentException("통화 로그 id가 일치하지 않습니다.");
         }
-        return new Assessment(
-                null,
-                callLog,
-                measuredAt,
-                depressionScore,
-                emotionalStability,
-                healthRisk,
-                cognitiveScore,
-                overallRisk,
-                riskLevel,
-                summary,
-                recommendation
-        );
+        return Assessment.builder()
+                .callLog(callLog)
+                .measuredAt(measuredAt)
+                .depressionScore(depressionScore)
+                .emotionalStability(emotionalStability)
+                .healthRisk(healthRisk)
+                .cognitiveScore(cognitiveScore)
+                .overallRisk(overallRisk)
+                .riskLevel(riskLevel)
+                .summary(summary)
+                .recommendation(recommendation)
+                .build();
     }
 }
 

@@ -5,16 +5,17 @@ import com.hyope.hyopeserver.entity.enums.AdherenceType;
 import com.hyope.hyopeserver.entity.enums.Slot;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter
-
 public class AdherenceRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,6 @@ public class AdherenceRecord {
     private boolean isNeeded;
     private boolean isDone;
 
-    // AdherenceRecord 엔티티
     public void patch(AdherenceRecordRequest reqDto) {
         if (reqDto.getAdherenceType() != null) this.adherenceType = reqDto.getAdherenceType();
         if (reqDto.getSlot() != null) this.slot = reqDto.getSlot();
@@ -41,4 +41,3 @@ public class AdherenceRecord {
         if (reqDto.getIsDone() != null) this.isDone = reqDto.getIsDone();
     }
 }
-

@@ -7,6 +7,7 @@ import com.hyope.hyopeserver.repository.CallScheduleRepository;
 import io.netty.channel.ChannelOption;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,19 +18,24 @@ import java.time.Duration;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class AiClientService {
 
     private final CallScheduleRepository callScheduleRepository;
+    private final WebClient webClient;
 
-    private final WebClient webClient = WebClient.builder()
-            .baseUrl("http://localhost:8000")
-            .clientConnector(new ReactorClientHttpConnector(
-                    HttpClient.create()
-                            .responseTimeout(Duration.ofSeconds(60))
-                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-            ))
-            .build();
+    public AiClientService(CallScheduleRepository callScheduleRepository,
+                           @Value("${internal.api-key}") String internalApiKey) {
+        this.callScheduleRepository = callScheduleRepository;
+        this.webClient = WebClient.builder()
+                .baseUrl("http://localhost:8000")
+                .defaultHeader("X-API-KEY", internalApiKey)
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .responseTimeout(Duration.ofSeconds(60))
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                ))
+                .build();
+    }
 
     public void requestCall(CallSchedule schedule) {
         Recipient recipient = schedule.getRecipient();
@@ -48,7 +54,7 @@ public class AiClientService {
                 })
                 .subscribe(
                         null,
-                        error -> {} // doOnError에서 처리하므로 여기서는 무시
+                        error -> {}
                 );
     }
 
