@@ -20,10 +20,6 @@ public class Assessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="recipient_id")
-    private Recipient recipient;
-
     @OneToOne
     @JoinColumn(name="call_log_id", unique = true)
     private CallLog callLog;

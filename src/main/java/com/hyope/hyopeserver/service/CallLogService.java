@@ -42,29 +42,14 @@ public class CallLogService {
         return CallLogResponse.from(callLog);
     }
 
-    //모두 조회
-    public Page<CallLogResponse> readAll(Long recipientId, Pageable pageable){
-        return callLogRepository.findByRecipientId(recipientId, pageable)
-                .map(CallLogResponse::from);
-    }
-
-    //날짜별 조회
-    public List<CallLogResponse> readByDateRange(Long recipientId, LocalDateTime from, LocalDateTime to){
+    //조건별(옵션) + 페이징 조회
+    public Page<CallLogResponse> readAll(Long recipientId, LocalDateTime from, LocalDateTime to,
+                                         Status status, Pageable pageable){
         if (!recipientRepository.existsById(recipientId)) {
             throw new IllegalArgumentException("통화 로그 목록 조회 실패: 해당 돌봄 대상자가 없습니다.");
         }
-        return callLogRepository.findByRecipientIdAndStartedAtBetween(recipientId, from, to)
-                .stream()
-                .map(CallLogResponse::from)
-                .toList();
-    }
-
-    //상태별 조회
-    public List<CallLogResponse> readByStatus(Long recipientId, Status status){
-        return callLogRepository.findByRecipientIdAndStatus(recipientId, status)
-                .stream()                                    // List -> Stream 변환
-                .map(CallLogResponse::from)
-                .toList();
+        return callLogRepository.findAllByFilters(recipientId, from, to, status, pageable)
+                .map(CallLogResponse::from);
     }
 
     @Transactional

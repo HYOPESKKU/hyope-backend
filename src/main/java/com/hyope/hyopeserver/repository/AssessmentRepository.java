@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AssessmentRepository extends JpaRepository<Assessment, Long> {
-    List<Assessment> findByRecipientId(Long recipientId);
-    void deleteByRecipientId(Long recipientId);
+    List<Assessment> findByCallLog_Recipient_Id(Long recipientId);
+    void deleteByCallLog_Recipient_Id(Long recipientId);
     boolean existsByCallLogId(Long callLogId);
     void deleteByCallLogId(Long callLogId);
     Optional<Assessment> findByCallLogId(Long callLogId);  // 추가

@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 public class AssessmentResponse {
-    @JsonProperty("recipient_id")
-    private Long recipientId;
 
     @JsonProperty("call_log_id")
     private Long callLogId;
@@ -33,7 +31,6 @@ public class AssessmentResponse {
 
     public static AssessmentResponse from(Assessment assessment){
         return new AssessmentResponse(
-                assessment.getRecipient().getId(),
                 assessment.getCallLog().getId(),
                 assessment.getMeasuredAt(),
                 assessment.getDepressionScore(),

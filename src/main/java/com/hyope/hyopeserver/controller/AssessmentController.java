@@ -26,13 +26,13 @@ public class AssessmentController {
         return ResponseEntity.ok(assessmentService.readAll(recipientId));
     }
     //POST
-    @PostMapping("/recipients/{recipientId}/call-logs/{callLogId}/assessments")
-    public ResponseEntity<AssessmentResponse> create(@PathVariable Long recipientId,
-                                                     @PathVariable Long callLogId,
+    @PostMapping("/call-logs/{callLogId}/assessments")
+    public ResponseEntity<AssessmentResponse> create(@PathVariable Long callLogId,
                                                      @RequestBody AssessmentRequest reqDto){
-        AssessmentResponse created = assessmentService.create(recipientId, callLogId, reqDto);
+        AssessmentResponse created = assessmentService.create(callLogId, reqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+
     //DELETE
     @DeleteMapping("/assessments/{id}")
     public ResponseEntity<AssessmentResponse> delete(@PathVariable Long id){
