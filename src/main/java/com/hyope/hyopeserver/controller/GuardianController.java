@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.controller;
 
-import com.hyope.hyopeserver.dto.request.GuardianRequestDto;
-import com.hyope.hyopeserver.dto.response.GuardianResponseDto;
+import com.hyope.hyopeserver.dto.guardian.GuardianPatchRequest;
+import com.hyope.hyopeserver.dto.guardian.GuardianResponse;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.service.GuardianService;
 import lombok.AllArgsConstructor;
@@ -15,45 +15,36 @@ import java.util.List;
 @RestController
 @Slf4j
 @AllArgsConstructor
+@RequestMapping("/guardians")
 public class GuardianController {
     private final GuardianService guardianService;
+
     //GET
-    @GetMapping("/guardian")
-    public List<GuardianResponseDto> readAll(){
+    @GetMapping
+    public List<GuardianResponse> readAll(){
         return guardianService.readAll().stream()
-                .map(GuardianResponseDto::createGuardianResponseDto)
+                .map(GuardianResponse::createGuardianResponseDto)
                 .toList();
     }
-    @GetMapping("/guardian/{id}")
-    public ResponseEntity<GuardianResponseDto> read(@PathVariable Long id){
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GuardianResponse> read(@PathVariable Long id){
         Guardian guardian = guardianService.read(id);
-        return ResponseEntity.ok(GuardianResponseDto.createGuardianResponseDto(guardian));
+        return ResponseEntity.ok(GuardianResponse.createGuardianResponseDto(guardian));
     }
-    //POST
-    @PostMapping("/guardian")
-    public ResponseEntity<GuardianResponseDto> create(@RequestBody GuardianRequestDto dto){
-        Guardian created = guardianService.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(GuardianResponseDto.createGuardianResponseDto(created));
-    }
+
     //PATCH
-    @PatchMapping("/guardian/{id}")
-    public ResponseEntity<GuardianResponseDto> update(@PathVariable Long id, @RequestBody GuardianRequestDto dto){
+    @PatchMapping("/{id}")
+    public ResponseEntity<GuardianResponse> update(@PathVariable Long id, @RequestBody GuardianPatchRequest dto){
         Guardian updated = guardianService.update(id, dto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(GuardianResponseDto.createGuardianResponseDto(updated));
-
+                .body(GuardianResponse.createGuardianResponseDto(updated));
     }
+
     //DELETE
-    @DeleteMapping("/guardian/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         guardianService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-    //login
-    @PostMapping("/guardian/login")
-    public ResponseEntity<GuardianResponseDto> login(@RequestBody GuardianRequestDto dto){
-        Guardian guardian = guardianService.login(dto.getLoginId(), dto.getPassword());
-        return ResponseEntity.ok(GuardianResponseDto.createGuardianResponseDto(guardian));
     }
 }

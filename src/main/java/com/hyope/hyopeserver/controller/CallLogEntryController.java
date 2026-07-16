@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.controller;
 
-import com.hyope.hyopeserver.dto.request.CallLogEntryRequestDto;
-import com.hyope.hyopeserver.dto.response.CallLogEntryResponseDto;
+import com.hyope.hyopeserver.dto.calllogentry.CallLogEntryRequest;
+import com.hyope.hyopeserver.dto.calllogentry.CallLogEntryResponse;
 import com.hyope.hyopeserver.service.CallLogEntryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,36 +20,26 @@ import java.util.List;
 public class CallLogEntryController {
     private final CallLogEntryService callLogEntryService;
     //GET
-    @GetMapping("/call-log-entry/{id}")
-    public ResponseEntity<CallLogEntryResponseDto> read(@PathVariable Long id){
+    @GetMapping("/call-log-entries/{id}")
+    public ResponseEntity<CallLogEntryResponse> read(@PathVariable Long id){
         return ResponseEntity.ok(callLogEntryService.read(id));
     }
-    @GetMapping("/call-log/{callLogId}/call-log-entry")
-    public ResponseEntity<Page<CallLogEntryResponseDto>> readAll(@PathVariable Long callLogId,
-                                                                 @PageableDefault(size = 20, sort = "sequence") Pageable pageable){
+    @GetMapping("/call-logs/{callLogId}/call-log-entries")
+    public ResponseEntity<Page<CallLogEntryResponse>> readAll(@PathVariable Long callLogId,
+                                                              @PageableDefault(size = 20, sort = "sequence") Pageable pageable){
         return ResponseEntity.ok(callLogEntryService.readAll(callLogId, pageable));
     }
-    @GetMapping("/call-log/{callLogId}/call-log-entry/all")
-    public ResponseEntity<List<CallLogEntryResponseDto>> readAllByCallLog(@PathVariable Long callLogId){
-        return ResponseEntity.ok(callLogEntryService.readAllByCallLog(callLogId));
-    }
     //POST
-    @PostMapping("/call-log/{callLogId}/call-log-entry")
-    public ResponseEntity<CallLogEntryResponseDto> create(@PathVariable Long callLogId,
-                                                          @RequestBody CallLogEntryRequestDto reqDto){
-        CallLogEntryResponseDto created = callLogEntryService.create(callLogId, reqDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
-    @PostMapping("/call-log/{callLogId}/call-log-entry/bulk")
-    public ResponseEntity<List<CallLogEntryResponseDto>> createAll(@PathVariable Long callLogId,
-                                                                   @RequestBody List<CallLogEntryRequestDto> reqDtos){
-        List<CallLogEntryResponseDto> created = callLogEntryService.createAll(callLogId, reqDtos);
+    @PostMapping("/call-logs/{callLogId}/call-log-entries")
+    public ResponseEntity<List<CallLogEntryResponse>> createAll(@PathVariable Long callLogId,
+                                                                @RequestBody List<CallLogEntryRequest> reqDtos){
+        List<CallLogEntryResponse> created = callLogEntryService.createAll(callLogId, reqDtos);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     //DELETE
-    @DeleteMapping("/call-log-entry/{id}")
-    public ResponseEntity<CallLogEntryResponseDto> delete(@PathVariable Long id){
-        CallLogEntryResponseDto deleted = callLogEntryService.delete(id);
+    @DeleteMapping("/call-log-entries/{id}")
+    public ResponseEntity<CallLogEntryResponse> delete(@PathVariable Long id){
+        CallLogEntryResponse deleted = callLogEntryService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 }

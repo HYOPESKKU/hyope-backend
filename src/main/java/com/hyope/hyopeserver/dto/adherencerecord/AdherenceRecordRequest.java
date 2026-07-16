@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.adherencerecord;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.AdherenceRecord;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AdherenceRecordRequestDto {
+public class AdherenceRecordRequest {
     @JsonProperty("assessment_id")
     private Long assessmentId;
 

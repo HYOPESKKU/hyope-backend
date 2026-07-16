@@ -1,10 +1,11 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.guardian;
 
 import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.Guardian;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
+import com.hyope.hyopeserver.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @AllArgsConstructor
 @Getter
 @ToString
-public class GuardianRequestDto {
+public class SignupRequest {
     private String loginId;
     private String password;
     private String firstName;
@@ -24,6 +25,7 @@ public class GuardianRequestDto {
     private String phoneNumber;
     private String email;
     private Gender gender;
+    private Role role;
 
     public Guardian toEntity(PasswordEncoder encoder){
         return Guardian.builder()
@@ -35,7 +37,7 @@ public class GuardianRequestDto {
                 .email(email)
                 .gender(gender)
                 .birthDate(birthDate)
-                .createdAt(LocalDateTime.now())
+                .role(role)
                 .build();
     }
 }

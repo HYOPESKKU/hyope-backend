@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.response;
+package com.hyope.hyopeserver.dto.assessment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Assessment;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Getter
-public class AssessmentResponseDto {
+public class AssessmentResponse {
     @JsonProperty("recipient_id")
     private Long recipientId;
 
@@ -31,8 +31,8 @@ public class AssessmentResponseDto {
     private String summary;
     private String recommendation;
 
-    public static AssessmentResponseDto from(Assessment assessment){
-        return new AssessmentResponseDto(
+    public static AssessmentResponse from(Assessment assessment){
+        return new AssessmentResponse(
                 assessment.getRecipient().getId(),
                 assessment.getCallLog().getId(),
                 assessment.getMeasuredAt(),

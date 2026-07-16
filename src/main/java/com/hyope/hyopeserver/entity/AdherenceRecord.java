@@ -1,6 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
-import com.hyope.hyopeserver.dto.request.AdherenceRecordRequestDto;
+import com.hyope.hyopeserver.dto.adherencerecord.AdherenceRecordRequest;
 import com.hyope.hyopeserver.entity.enums.AdherenceType;
 import com.hyope.hyopeserver.entity.enums.Slot;
 import jakarta.persistence.*;
@@ -34,7 +34,7 @@ public class AdherenceRecord {
     private boolean isDone;
 
     // AdherenceRecord 엔티티
-    public void patch(AdherenceRecordRequestDto reqDto) {
+    public void patch(AdherenceRecordRequest reqDto) {
         if (reqDto.getAdherenceType() != null) this.adherenceType = reqDto.getAdherenceType();
         if (reqDto.getSlot() != null) this.slot = reqDto.getSlot();
         if (reqDto.getIsNeeded() != null) this.isNeeded = reqDto.getIsNeeded();

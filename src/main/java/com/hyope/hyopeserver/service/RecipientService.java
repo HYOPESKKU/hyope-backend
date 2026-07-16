@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.request.RecipientRequestDto;
-import com.hyope.hyopeserver.dto.response.RecipientResponseDto;
+import com.hyope.hyopeserver.dto.recipient.RecipientRequest;
+import com.hyope.hyopeserver.dto.recipient.RecipientResponse;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.repository.GuardianRepository;
@@ -24,45 +24,45 @@ public class RecipientService {
     private final AssessmentService assessmentService;
 
     @Transactional
-    public RecipientResponseDto create(Long guardianId, RecipientRequestDto reqDto){
+    public RecipientResponse create(Long guardianId, RecipientRequest reqDto){
         Guardian guardian = guardianRepository.findById(guardianId)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 생성 실패: 대상 보호자가 없습니다."));
         Recipient recipient = reqDto.toEntity(guardian);
         Recipient created = recipientRepository.save(recipient);
-        return RecipientResponseDto.from(created);
+        return RecipientResponse.from(created);
     }
 
-    public RecipientResponseDto read(Long id){
+    public RecipientResponse read(Long id){
         Recipient recipient = recipientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 조회 실패: 해당 돌봄 대상자가 없습니다."));
-        return RecipientResponseDto.from(recipient);
+        return RecipientResponse.from(recipient);
     }
 
-    public List<RecipientResponseDto> readAll(Long guardianId){
+    public List<RecipientResponse> readAll(Long guardianId){
         if (!guardianRepository.existsById(guardianId)) {
             throw new IllegalArgumentException("돌봄 대상자 목록 조회 실패: 대상 보호자가 없습니다.");
         }
         return recipientRepository.findByGuardianId(guardianId)
                 .stream()
-                .map(RecipientResponseDto::from)
+                .map(RecipientResponse::from)
                 .toList();
     }
 
     @Transactional
-    public RecipientResponseDto update(Long id, RecipientRequestDto reqDto){
+    public RecipientResponse update(Long id, RecipientRequest reqDto){
         Recipient target = recipientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 수정 실패: 해당 돌봄 대상자가 없습니다."));
         target.patch(reqDto); // 보호자 변경은 이 엔드포인트에서 허용하지 않음 (항상 null 전달)
         Recipient updated = recipientRepository.save(target);
-        return RecipientResponseDto.from(updated);
+        return RecipientResponse.from(updated);
     }
 
     @Transactional
-    public RecipientResponseDto delete(Long id){
+    public RecipientResponse delete(Long id){
         Recipient target = recipientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 삭제 실패: 해당 돌봄 대상자가 없습니다."));
         recipientRepository.delete(target);
-        return RecipientResponseDto.from(target);
+        return RecipientResponse.from(target);
     }
 
     @Transactional

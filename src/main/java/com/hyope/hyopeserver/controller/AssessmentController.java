@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.controller;
 
-import com.hyope.hyopeserver.dto.request.AssessmentRequestDto;
-import com.hyope.hyopeserver.dto.response.AssessmentResponseDto;
+import com.hyope.hyopeserver.dto.assessment.AssessmentRequest;
+import com.hyope.hyopeserver.dto.assessment.AssessmentResponse;
 import com.hyope.hyopeserver.service.AssessmentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,26 +17,26 @@ import java.util.List;
 public class AssessmentController {
     private final AssessmentService assessmentService;
     //GET
-    @GetMapping("/assessment/{id}")
-    public ResponseEntity<AssessmentResponseDto> read(@PathVariable Long id){
+    @GetMapping("/assessments/{id}")
+    public ResponseEntity<AssessmentResponse> read(@PathVariable Long id){
         return ResponseEntity.ok(assessmentService.read(id));
     }
-    @GetMapping("/recipient/{recipientId}/assessment")
-    public ResponseEntity<List<AssessmentResponseDto>> readAll(@PathVariable Long recipientId){
+    @GetMapping("/recipients/{recipientId}/assessments")
+    public ResponseEntity<List<AssessmentResponse>> readAll(@PathVariable Long recipientId){
         return ResponseEntity.ok(assessmentService.readAll(recipientId));
     }
     //POST
-    @PostMapping("/recipient/{recipientId}/call-log/{callLogId}/assessment")
-    public ResponseEntity<AssessmentResponseDto> create(@PathVariable Long recipientId,
-                                                        @PathVariable Long callLogId,
-                                                        @RequestBody AssessmentRequestDto reqDto){
-        AssessmentResponseDto created = assessmentService.create(recipientId, callLogId, reqDto);
+    @PostMapping("/recipients/{recipientId}/call-logs/{callLogId}/assessments")
+    public ResponseEntity<AssessmentResponse> create(@PathVariable Long recipientId,
+                                                     @PathVariable Long callLogId,
+                                                     @RequestBody AssessmentRequest reqDto){
+        AssessmentResponse created = assessmentService.create(recipientId, callLogId, reqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     //DELETE
-    @DeleteMapping("/assessment/{id}")
-    public ResponseEntity<AssessmentResponseDto> delete(@PathVariable Long id){
-        AssessmentResponseDto deleted = assessmentService.delete(id);
+    @DeleteMapping("/assessments/{id}")
+    public ResponseEntity<AssessmentResponse> delete(@PathVariable Long id){
+        AssessmentResponse deleted = assessmentService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 }

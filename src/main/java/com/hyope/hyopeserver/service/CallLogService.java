@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.request.CallLogRequestDto;
-import com.hyope.hyopeserver.dto.response.CallLogResponseDto;
+import com.hyope.hyopeserver.dto.calllog.CallLogRequest;
+import com.hyope.hyopeserver.dto.calllog.CallLogResponse;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.entity.enums.Status;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,52 +27,52 @@ public class CallLogService {
     private final AssessmentService assessmentService;
 
     @Transactional
-    public CallLogResponseDto create(Long recipientId, CallLogRequestDto reqDto){
+    public CallLogResponse create(Long recipientId, CallLogRequest reqDto){
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 정보 생성 실패: 해당 돌봄 대상자가 없습니다."));
         CallLog callLog = reqDto.toEntity(recipient);
         CallLog created = callLogRepository.save(callLog);
-        return CallLogResponseDto.from(created);
+        return CallLogResponse.from(created);
     }
 
     //한 건 조회
-    public CallLogResponseDto read(Long id){
+    public CallLogResponse read(Long id){
         CallLog callLog = callLogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 조회 실패: 해당 통화 로그가 없습니다."));
-        return CallLogResponseDto.from(callLog);
+        return CallLogResponse.from(callLog);
     }
 
     //모두 조회
-    public Page<CallLogResponseDto> readAll(Long recipientId, Pageable pageable){
+    public Page<CallLogResponse> readAll(Long recipientId, Pageable pageable){
         return callLogRepository.findByRecipientId(recipientId, pageable)
-                .map(CallLogResponseDto::from);
+                .map(CallLogResponse::from);
     }
 
     //날짜별 조회
-    public List<CallLogResponseDto> readByDateRange(Long recipientId, LocalDateTime from, LocalDateTime to){
+    public List<CallLogResponse> readByDateRange(Long recipientId, LocalDateTime from, LocalDateTime to){
         if (!recipientRepository.existsById(recipientId)) {
             throw new IllegalArgumentException("통화 로그 목록 조회 실패: 해당 돌봄 대상자가 없습니다.");
         }
         return callLogRepository.findByRecipientIdAndStartedAtBetween(recipientId, from, to)
                 .stream()
-                .map(CallLogResponseDto::from)
+                .map(CallLogResponse::from)
                 .toList();
     }
 
     //상태별 조회
-    public List<CallLogResponseDto> readByStatus(Long recipientId, Status status){
+    public List<CallLogResponse> readByStatus(Long recipientId, Status status){
         return callLogRepository.findByRecipientIdAndStatus(recipientId, status)
                 .stream()                                    // List -> Stream 변환
-                .map(CallLogResponseDto::from)
+                .map(CallLogResponse::from)
                 .toList();
     }
 
     @Transactional
-    public CallLogResponseDto delete(Long id){
+    public CallLogResponse delete(Long id){
         CallLog target = callLogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 삭제 실패: 해당 통화 로그가 없습니다."));
         callLogRepository.delete(target);
-        return CallLogResponseDto.from(target);
+        return CallLogResponse.from(target);
     }
 
     @Transactional

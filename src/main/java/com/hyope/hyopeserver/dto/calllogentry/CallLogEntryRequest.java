@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.calllogentry;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.CallLog;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CallLogEntryRequestDto {
+public class CallLogEntryRequest {
     @JsonProperty("call_log_id")
     private Long callLogId;
 

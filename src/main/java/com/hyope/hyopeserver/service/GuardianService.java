@@ -1,6 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.request.GuardianRequestDto;
+import com.hyope.hyopeserver.dto.guardian.GuardianPatchRequest;
+import com.hyope.hyopeserver.dto.guardian.SignupRequest;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.exception.AuthenticationFailedException;
 import com.hyope.hyopeserver.repository.GuardianRepository;
@@ -21,7 +22,7 @@ public class GuardianService {
     private final RecipientService recipientService;
 
     @Transactional
-    public Guardian create(GuardianRequestDto dto){
+    public Guardian create(SignupRequest dto){
         if (guardianRepository.existsByLoginId(dto.getLoginId())) {
             throw new IllegalArgumentException("보호자 생성 실패: 이미 존재하는 로그인 ID입니다.");
         }
@@ -38,10 +39,10 @@ public class GuardianService {
     }
 
     @Transactional
-    public Guardian update(Long id, GuardianRequestDto dto){
+    public Guardian update(Long id, GuardianPatchRequest dto){
         Guardian target = guardianRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("보호자 수정 실패: 해당 보호자가 없습니다"));
-        target.patch(dto.toEntity(passwordEncoder));
+        target.patch(dto.toEntity());
         return guardianRepository.save(target);
     }
 

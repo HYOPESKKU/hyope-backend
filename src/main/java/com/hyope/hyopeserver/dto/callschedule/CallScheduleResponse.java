@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.response;
+package com.hyope.hyopeserver.dto.callschedule;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.CallSchedule;
@@ -12,15 +12,15 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @ToString
 @Getter
-public class CallScheduleResponseDto {
+public class CallScheduleResponse {
     private Long id;
     @JsonProperty("recipient_id")
     private Long recipientId;
     private Boolean isActive;
     private LocalTime scheduledTime;
 
-    public static CallScheduleResponseDto from(CallSchedule callSchedule){
-        return new CallScheduleResponseDto(
+    public static CallScheduleResponse from(CallSchedule callSchedule){
+        return new CallScheduleResponse(
                 callSchedule.getId(),
                 callSchedule.getRecipient().getId(),
                 callSchedule.getIsActive(),

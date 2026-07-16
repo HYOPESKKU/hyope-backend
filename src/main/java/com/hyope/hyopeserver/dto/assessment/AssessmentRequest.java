@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.assessment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.Assessment;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AssessmentRequestDto {
+public class AssessmentRequest {
     @JsonProperty("recipient_id")
     private Long recipientId;
 

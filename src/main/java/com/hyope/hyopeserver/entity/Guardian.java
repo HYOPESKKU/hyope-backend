@@ -1,6 +1,7 @@
 package com.hyope.hyopeserver.entity;
 
 import com.hyope.hyopeserver.entity.enums.Gender;
+import com.hyope.hyopeserver.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,6 +37,10 @@ public class Guardian {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     public void patch(Guardian guardian) {
         if (guardian.loginId != null) this.loginId = guardian.loginId;
         if (guardian.passwordHash != null) this.passwordHash = guardian.passwordHash;
@@ -44,6 +49,6 @@ public class Guardian {
         if (guardian.phoneNumber != null) this.phoneNumber = guardian.phoneNumber;
         if (guardian.email != null) this.email = guardian.email;
         if (guardian.gender != null) this.gender = guardian.gender;
-        if(guardian.birthDate != null) this.birthDate = guardian.birthDate;
+        if (guardian.birthDate != null) this.birthDate = guardian.birthDate;
     }
 }

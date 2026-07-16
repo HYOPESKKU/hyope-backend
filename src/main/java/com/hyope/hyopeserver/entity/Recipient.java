@@ -1,6 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
-import com.hyope.hyopeserver.dto.request.RecipientRequestDto;
+import com.hyope.hyopeserver.dto.recipient.RecipientRequest;
 import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.enums.RelationType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,7 +42,7 @@ public class Recipient {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public void patch(RecipientRequestDto reqDto) {
+    public void patch(RecipientRequest reqDto) {
         if(reqDto.getFirstName() != null) this.firstName = reqDto.getFirstName();
         if(reqDto.getLastName() != null) this.lastName = reqDto.getLastName();
         if(reqDto.getBirthDate() != null) this.birthDate = reqDto.getBirthDate();

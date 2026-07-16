@@ -1,7 +1,8 @@
-package com.hyope.hyopeserver.dto.response;
+package com.hyope.hyopeserver.dto.guardian;
 
 import com.hyope.hyopeserver.entity.enums.Gender;
 import com.hyope.hyopeserver.entity.Guardian;
+import com.hyope.hyopeserver.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Getter
-public class GuardianResponseDto {
+public class GuardianResponse {
     private Long id;
     private String loginId;
     private String firstName;
@@ -22,9 +23,10 @@ public class GuardianResponseDto {
     private String email;
     private Gender gender;
     private LocalDate birthDate;
+    private Role role;
 
-    public static GuardianResponseDto createGuardianResponseDto(Guardian guardian){
-        return new GuardianResponseDto(
+    public static GuardianResponse createGuardianResponseDto(Guardian guardian){
+        return new GuardianResponse(
                 guardian.getId(),
                 guardian.getLoginId(),
                 guardian.getFirstName(),
@@ -32,7 +34,8 @@ public class GuardianResponseDto {
                 guardian.getPhoneNumber(),
                 guardian.getEmail(),
                 guardian.getGender(),
-                guardian.getBirthDate()
+                guardian.getBirthDate(),
+                guardian.getRole()
         );
     }
 }

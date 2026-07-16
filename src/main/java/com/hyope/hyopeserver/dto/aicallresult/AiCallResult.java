@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.aicallresult;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.enums.RiskLevel;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class AiCallResultDto {
+public class AiCallResult {
 
     @JsonProperty("recipient_id")
     private Long recipientId;

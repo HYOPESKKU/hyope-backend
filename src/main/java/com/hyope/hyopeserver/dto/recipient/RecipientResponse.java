@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.response;
+package com.hyope.hyopeserver.dto.recipient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.enums.Gender;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Getter
-public class RecipientResponseDto {
+public class RecipientResponse {
     private Long id;
 
     @JsonProperty("guardian_id")
@@ -28,8 +28,8 @@ public class RecipientResponseDto {
     private String phoneNumber;
     private RelationType relationToGuardian;
 
-    public static RecipientResponseDto from(Recipient recipient){
-        return new RecipientResponseDto(
+    public static RecipientResponse from(Recipient recipient){
+        return new RecipientResponse(
                 recipient.getId(),
                 recipient.getGuardian().getId(),
                 recipient.getFirstName(),

@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.recipient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.enums.Gender;
@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RecipientRequestDto {
+public class RecipientRequest {
     @JsonProperty("guardian_id")
     private Long guardianId;
 

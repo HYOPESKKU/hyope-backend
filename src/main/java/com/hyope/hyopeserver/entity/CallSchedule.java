@@ -1,6 +1,6 @@
 package com.hyope.hyopeserver.entity;
 
-import com.hyope.hyopeserver.dto.request.CallScheduleRequestDto;
+import com.hyope.hyopeserver.dto.callschedule.CallScheduleRequest;
 import com.hyope.hyopeserver.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +28,7 @@ public class CallSchedule {
     private Recipient recipient;
 
     private LocalTime scheduledTime;
+    @Column(columnDefinition = "bit(1)")
     private Boolean isActive;
 
     @Enumerated(EnumType.STRING)
@@ -36,7 +37,7 @@ public class CallSchedule {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public void patch(CallScheduleRequestDto reqDto, Recipient recipient) {
+    public void patch(CallScheduleRequest reqDto, Recipient recipient) {
         if (recipient != null) this.recipient = recipient;
         if (reqDto.getScheduledTime() != null) this.scheduledTime = reqDto.getScheduledTime();
         if (reqDto.getIsActive() != null) this.isActive = reqDto.getIsActive();

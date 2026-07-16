@@ -1,8 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.request.AiCallResultDto;
+import com.hyope.hyopeserver.dto.aicallresult.AiCallResult;
 import com.hyope.hyopeserver.entity.*;
-import com.hyope.hyopeserver.entity.enums.Status;
 import com.hyope.hyopeserver.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +22,13 @@ public class CallResultService {
     private final AdherenceRecordRepository adherenceRecordRepository;
 
     @Transactional
-    public void saveAll(AiCallResultDto dto) {
+    public void saveAll(AiCallResult dto) {
         // 1. Recipient 조회
         Recipient recipient = recipientRepository.findById(dto.getRecipientId())
                 .orElseThrow(() -> new IllegalArgumentException("Recipient not found: " + dto.getRecipientId()));
 
         // 2. CallLog 저장
-        AiCallResultDto.CallLogData callLogData = dto.getCallLog();
+        AiCallResult.CallLogData callLogData = dto.getCallLog();
         int durationSec = (int) Duration.between(callLogData.getStartedAt(), callLogData.getEndedAt()).getSeconds();
         CallLog callLog = new CallLog(
                 null,
@@ -55,7 +54,7 @@ public class CallResultService {
         });
 
         // 4. Assessment 저장
-        AiCallResultDto.AssessmentData assessmentData = dto.getAssessment();
+        AiCallResult.AssessmentData assessmentData = dto.getAssessment();
         Assessment assessment = new Assessment(
                 null,
                 recipient,

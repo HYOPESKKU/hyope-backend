@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.response;
+package com.hyope.hyopeserver.dto.adherencerecord;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.AdherenceRecord;
@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Getter
-public class AdherenceRecordResponseDto {
+public class AdherenceRecordResponse {
     private Long id;
 
     @JsonProperty("assessment_id")
@@ -25,8 +25,8 @@ public class AdherenceRecordResponseDto {
     private boolean isNeeded;
     private boolean isDone;
 
-    public static AdherenceRecordResponseDto from(AdherenceRecord adherenceRecord){
-        return new AdherenceRecordResponseDto(
+    public static AdherenceRecordResponse from(AdherenceRecord adherenceRecord){
+        return new AdherenceRecordResponse(
                 adherenceRecord.getId(),
                 adherenceRecord.getAssessment().getId(),
                 adherenceRecord.getAdherenceType(),

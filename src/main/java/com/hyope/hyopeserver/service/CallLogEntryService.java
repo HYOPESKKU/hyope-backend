@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.request.CallLogEntryRequestDto;
-import com.hyope.hyopeserver.dto.response.CallLogEntryResponseDto;
+import com.hyope.hyopeserver.dto.calllogentry.CallLogEntryRequest;
+import com.hyope.hyopeserver.dto.calllogentry.CallLogEntryResponse;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.CallLogEntry;
 import com.hyope.hyopeserver.repository.CallLogEntryRepository;
@@ -23,17 +23,17 @@ public class CallLogEntryService {
     private final CallLogEntryRepository callLogEntryRepository;
 
     @Transactional
-    public CallLogEntryResponseDto create(Long callLogId, CallLogEntryRequestDto reqDto){
+    public CallLogEntryResponse create(Long callLogId, CallLogEntryRequest reqDto){
         CallLog callLog = callLogRepository.findById(callLogId)
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 생성 실패: 해당 통화 로그가 없습니다."));
         CallLogEntry callLogEntry = reqDto.toEntity(callLog);
         CallLogEntry created = callLogEntryRepository.save(callLogEntry);
-        return CallLogEntryResponseDto.from(created);
+        return CallLogEntryResponse.from(created);
     }
 
     //일괄 생성 (bulk create)
     @Transactional
-    public List<CallLogEntryResponseDto> createAll(Long callLogId, List<CallLogEntryRequestDto> reqDtos){
+    public List<CallLogEntryResponse> createAll(Long callLogId, List<CallLogEntryRequest> reqDtos){
         CallLog callLog = callLogRepository.findById(callLogId)
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 생성 실패: 해당 통화 로그가 없습니다."));
         List<CallLogEntry> entries = reqDtos.stream()
@@ -41,43 +41,43 @@ public class CallLogEntryService {
                 .toList();
         List<CallLogEntry> created = callLogEntryRepository.saveAll(entries);
         return created.stream()
-                .map(CallLogEntryResponseDto::from)
+                .map(CallLogEntryResponse::from)
                 .toList();
     }
 
     //한 건 조회
-    public CallLogEntryResponseDto read(Long id){
+    public CallLogEntryResponse read(Long id){
         CallLogEntry callLogEntry = callLogEntryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 조회 실패: 해당 통화 로그가 없습니다."));
-        return CallLogEntryResponseDto.from(callLogEntry);
+        return CallLogEntryResponse.from(callLogEntry);
     }
 
     //모두 조회
-    public Page<CallLogEntryResponseDto> readAll(Long callLogId, Pageable pageable){
+    public Page<CallLogEntryResponse> readAll(Long callLogId, Pageable pageable){
         if (!callLogRepository.existsById(callLogId)) {
             throw new IllegalArgumentException("통화 기록 목록 조회 실패: 해당 통화 로그가 없습니다.");
         }
         return callLogEntryRepository.findByCallLogId(callLogId, pageable)
-                .map(CallLogEntryResponseDto::from);
+                .map(CallLogEntryResponse::from);
     }
 
     //CallLog 단위로 전체 대화(질문-답변) 한 번에 보기
-    public List<CallLogEntryResponseDto> readAllByCallLog(Long callLogId){
+    public List<CallLogEntryResponse> readAllByCallLog(Long callLogId){
         if (!callLogRepository.existsById(callLogId)) {
             throw new IllegalArgumentException("통화 기록 목록 조회 실패: 해당 통화 로그가 없습니다.");
         }
         return callLogEntryRepository.findByCallLogIdOrderBySequenceAsc(callLogId)
                 .stream()
-                .map(CallLogEntryResponseDto::from)
+                .map(CallLogEntryResponse::from)
                 .toList();
     }
 
     @Transactional
-    public CallLogEntryResponseDto delete(Long id){
+    public CallLogEntryResponse delete(Long id){
         CallLogEntry target = callLogEntryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 기록 조회 실패: 해당 통화 로그가 없습니다."));
         callLogEntryRepository.delete(target);
-        return CallLogEntryResponseDto.from(target);
+        return CallLogEntryResponse.from(target);
     }
 
     @Transactional

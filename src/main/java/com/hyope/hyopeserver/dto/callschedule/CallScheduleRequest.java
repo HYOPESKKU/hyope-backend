@@ -1,4 +1,4 @@
-package com.hyope.hyopeserver.dto.request;
+package com.hyope.hyopeserver.dto.callschedule;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hyope.hyopeserver.entity.CallSchedule;
@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CallScheduleRequestDto {
+public class CallScheduleRequest {
     @JsonProperty("recipient_id")
     private Long recipientId;
 

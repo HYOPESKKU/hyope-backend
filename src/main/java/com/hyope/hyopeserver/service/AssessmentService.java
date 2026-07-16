@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.service;
 
-import com.hyope.hyopeserver.dto.request.AssessmentRequestDto;
-import com.hyope.hyopeserver.dto.response.AssessmentResponseDto;
+import com.hyope.hyopeserver.dto.assessment.AssessmentRequest;
+import com.hyope.hyopeserver.dto.assessment.AssessmentResponse;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Recipient;
@@ -25,7 +25,7 @@ public class AssessmentService {
     private final AdherenceRecordService adherenceRecordService;
 
     @Transactional
-    public AssessmentResponseDto create(Long recipientId, Long callLogId, AssessmentRequestDto reqDto){
+    public AssessmentResponse create(Long recipientId, Long callLogId, AssessmentRequest reqDto){
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 생성 실패: 해당 돌봄 대상자가 없습니다."));
         CallLog callLog = callLogRepository.findById(callLogId)
@@ -37,32 +37,32 @@ public class AssessmentService {
 
         Assessment assessment = reqDto.toEntity(recipient, callLog);
         Assessment created = assessmentRepository.save(assessment);
-        return AssessmentResponseDto.from(created);
+        return AssessmentResponse.from(created);
     }
 
-    public AssessmentResponseDto read(Long id){
+    public AssessmentResponse read(Long id){
         Assessment assessment = assessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 조회 실패: 해당 평가 지표가 없습니다."));
-        return AssessmentResponseDto.from(assessment);
+        return AssessmentResponse.from(assessment);
     }
 
-    public List<AssessmentResponseDto> readAll(Long recipientId){
+    public List<AssessmentResponse> readAll(Long recipientId){
         if (!recipientRepository.existsById(recipientId)) {
             throw new IllegalArgumentException("평가 지표 목록 조회 실패: 해당 돌봄 대상자가 없습니다.");
         }
         return assessmentRepository.findByRecipientId(recipientId)
                 .stream()
-                .map(AssessmentResponseDto::from)
+                .map(AssessmentResponse::from)
                 .toList();
     }
 
     @Transactional
-    public AssessmentResponseDto delete(Long id){
+    public AssessmentResponse delete(Long id){
         Assessment target = assessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 삭제 실패: 해당 평가 지표가 없습니다."));
         adherenceRecordService.deleteAllByAssessmentId(id);
         assessmentRepository.delete(target);
-        return AssessmentResponseDto.from(target);
+        return AssessmentResponse.from(target);
     }
 
     @Transactional

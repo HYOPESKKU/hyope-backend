@@ -1,7 +1,7 @@
 package com.hyope.hyopeserver.controller;
 
-import com.hyope.hyopeserver.dto.request.RecipientRequestDto;
-import com.hyope.hyopeserver.dto.response.RecipientResponseDto;
+import com.hyope.hyopeserver.dto.recipient.RecipientRequest;
+import com.hyope.hyopeserver.dto.recipient.RecipientResponse;
 import com.hyope.hyopeserver.service.RecipientService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,30 +17,30 @@ import java.util.List;
 public class RecipientController {
     private final RecipientService recipientService;
     //GET
-    @GetMapping("/recipient/{id}")
-    public ResponseEntity<RecipientResponseDto> read(@PathVariable Long id){
+    @GetMapping("/recipients/{id}")
+    public ResponseEntity<RecipientResponse> read(@PathVariable Long id){
         return ResponseEntity.ok(recipientService.read(id));
     }
-    @GetMapping("/guardian/{guardianId}/recipient")
-    public ResponseEntity<List<RecipientResponseDto>> readAll(@PathVariable Long guardianId){
+    @GetMapping("/guardians/{guardianId}/recipients")
+    public ResponseEntity<List<RecipientResponse>> readAll(@PathVariable Long guardianId){
         return ResponseEntity.ok(recipientService.readAll(guardianId));
     }
     //POST
-    @PostMapping("/guardian/{guardianId}/recipient")
-    public ResponseEntity<RecipientResponseDto> create(@PathVariable Long guardianId, @RequestBody RecipientRequestDto reqDto){
-        RecipientResponseDto created = recipientService.create(guardianId, reqDto);
+    @PostMapping("/guardians/{guardianId}/recipients")
+    public ResponseEntity<RecipientResponse> create(@PathVariable Long guardianId, @RequestBody RecipientRequest reqDto){
+        RecipientResponse created = recipientService.create(guardianId, reqDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     //PATCH
-    @PatchMapping("/recipient/{id}")
-    public ResponseEntity<RecipientResponseDto> update(@PathVariable Long id, @RequestBody RecipientRequestDto reqDto){
-        RecipientResponseDto updated = recipientService.update(id, reqDto);
+    @PatchMapping("/recipients/{id}")
+    public ResponseEntity<RecipientResponse> update(@PathVariable Long id, @RequestBody RecipientRequest reqDto){
+        RecipientResponse updated = recipientService.update(id, reqDto);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
     //DELETE
-    @DeleteMapping("/recipient/{id}")
-    public ResponseEntity<RecipientResponseDto> delete(@PathVariable Long id){
-        RecipientResponseDto deleted = recipientService.delete(id);
+    @DeleteMapping("/recipients/{id}")
+    public ResponseEntity<RecipientResponse> delete(@PathVariable Long id){
+        RecipientResponse deleted = recipientService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 }
