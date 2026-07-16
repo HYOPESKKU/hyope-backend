@@ -107,6 +107,7 @@
 
 ## 데이터 파이프라인
 
-<img height="800" alt="llm_spring_flutter_pipeline" src="https://github.com/user-attachments/assets/d8f0b716-ca4d-49a8-ab3e-cb460c40b39a" />
+<img width="2720" height="2240" alt="hyope_pipeline_v7" src="https://github.com/user-attachments/assets/35743800-c729-490c-94f0-529d615213d7" />
+
 
 
