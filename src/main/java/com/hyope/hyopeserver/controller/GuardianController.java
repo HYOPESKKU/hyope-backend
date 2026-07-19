@@ -6,6 +6,7 @@ import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.service.GuardianService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,12 @@ public class GuardianController {
     @GetMapping("/{id}")
     public ResponseEntity<GuardianResponse> read(@PathVariable Long id){
         Guardian guardian = guardianService.read(id);
+        return ResponseEntity.ok(GuardianResponse.createGuardianResponseDto(guardian));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<GuardianResponse> readMe(Authentication authentication){
+        Guardian guardian = guardianService.readByLoginId(authentication.getName());
         return ResponseEntity.ok(GuardianResponse.createGuardianResponseDto(guardian));
     }
 

@@ -38,6 +38,11 @@ public class GuardianService {
         return guardianRepository.findAll();
     }
 
+    public Guardian readByLoginId(String loginId){
+        return guardianRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("보호자 조회 실패: 해당 보호자가 없습니다"));
+    }
+
     @Transactional
     public Guardian update(Long id, GuardianPatchRequest dto){
         Guardian target = guardianRepository.findById(id)
