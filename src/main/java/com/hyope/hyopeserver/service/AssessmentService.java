@@ -4,24 +4,32 @@ import com.hyope.hyopeserver.dto.assessment.AssessmentRequest;
 import com.hyope.hyopeserver.dto.assessment.AssessmentResponse;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
+import com.hyope.hyopeserver.entity.Notification;
+import com.hyope.hyopeserver.entity.enums.NotificationReason;
+import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import com.hyope.hyopeserver.repository.AssessmentRepository;
 import com.hyope.hyopeserver.repository.CallLogRepository;
+import com.hyope.hyopeserver.repository.NotificationRepository;
 import com.hyope.hyopeserver.repository.RecipientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AssessmentService {
+    private static final double SUDDEN_SPIKE_THRESHOLD = 1.5;
+
     private final RecipientRepository recipientRepository;
     private final CallLogRepository callLogRepository;
     private final AssessmentRepository assessmentRepository;
     private final AdherenceRecordService adherenceRecordService;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public AssessmentResponse create(Long callLogId, AssessmentRequest reqDto){
@@ -34,7 +42,47 @@ public class AssessmentService {
 
         Assessment assessment = reqDto.toEntity(callLog);
         Assessment created = assessmentRepository.save(assessment);
+
+        checkAndCreateNotification(created, callLog.getRecipient().getId());
+
         return AssessmentResponse.from(created);
+    }
+
+    private void checkAndCreateNotification(Assessment current, Long recipientId) {
+        boolean isHighRisk = current.getRiskLevel() == RiskLevel.WARNING
+                || current.getRiskLevel() == RiskLevel.HIGH;
+
+        List<Assessment> previousList = assessmentRepository
+                .findByCallLog_Recipient_IdAndMeasuredAtBeforeOrderByMeasuredAtDesc(
+                        recipientId, current.getMeasuredAt());
+
+        boolean isSuddenSpike = false;
+        if (!previousList.isEmpty()) {
+            double previousRisk = previousList.get(0).getOverallRisk();
+            double diff = current.getOverallRisk() - previousRisk;
+            isSuddenSpike = diff >= SUDDEN_SPIKE_THRESHOLD;
+        }
+
+        if (!isHighRisk && !isSuddenSpike) return;
+
+        NotificationReason reason;
+        if (isHighRisk && isSuddenSpike) {
+            reason = NotificationReason.BOTH;
+        } else if (isHighRisk) {
+            reason = NotificationReason.HIGH_RISK;
+        } else {
+            reason = NotificationReason.SUDDEN_SPIKE;
+        }
+
+        Notification notification = Notification.builder()
+                .assessment(current)
+                .reason(reason)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        notificationRepository.save(notification);
+        log.info("알림 생성: recipientId={}, assessmentId={}, reason={}",
+                recipientId, current.getId(), reason);
     }
 
     public AssessmentResponse read(Long id){
