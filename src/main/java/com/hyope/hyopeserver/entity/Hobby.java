@@ -10,29 +10,25 @@ import lombok.ToString;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "hobby")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter
-public class RecipientHistory {
+public class Hobby {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "recipient_id", unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_id", nullable = false)
     private Recipient recipient;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    @Column(nullable = false)
+    private String text;
 
-    private LocalDateTime updatedAt;
-
-    public void update(String content) {
-        this.content = content;
-        this.updatedAt = LocalDateTime.now();
-    }
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

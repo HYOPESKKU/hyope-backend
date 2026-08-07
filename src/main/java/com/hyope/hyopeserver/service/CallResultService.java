@@ -20,6 +20,7 @@ public class CallResultService {
     private final CallLogEntryRepository callLogEntryRepository;
     private final AssessmentRepository assessmentRepository;
     private final AdherenceRecordRepository adherenceRecordRepository;
+    private final RecipientProfileService recipientProfileService;
 
     @Transactional
     public void saveAll(AiCallResult dto) {
@@ -97,6 +98,9 @@ public class CallResultService {
                     .build();
             adherenceRecordRepository.save(adherenceRecord);
         });
+
+        // 6. 프로필(취미/근황) 갱신
+        recipientProfileService.applyUpdates(dto.getRecipientId(), dto.getProfileUpdates());
 
         log.info("AI 분석 결과 저장 완료 - recipientId={}, callLogId={}", dto.getRecipientId(), savedCallLog.getId());
     }

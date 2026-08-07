@@ -29,6 +29,9 @@ public class AiCallResult {
     @JsonProperty("adherence_records")
     private List<AdherenceRecordData> adherenceRecords;
 
+    @JsonProperty("profile_updates")
+    private List<ProfileUpdateData> profileUpdates;
+
     @Getter
     @NoArgsConstructor
     public static class CallLogData {
@@ -80,5 +83,16 @@ public class AiCallResult {
         private boolean isNeeded;
         @JsonProperty("is_done")
         private boolean isDone;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class ProfileUpdateData {
+        private String action;   // "add" | "remove"
+        private String kind;     // "hobby" | "event"
+        private String text;
+        @JsonProperty("event_id")
+        private String eventId;
+        private String reason;
     }
 }
