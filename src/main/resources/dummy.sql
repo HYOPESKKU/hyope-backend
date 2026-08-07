@@ -86,3 +86,18 @@ INSERT INTO adherence_record (assessment_id, adherence_type, slot, is_needed, is
 SELECT id, 'MEAL', 'BREAKFAST', TRUE, (id % 5 <> 0) FROM assessment;
 INSERT INTO adherence_record (assessment_id, adherence_type, slot, is_needed, is_done)
 SELECT id, 'MEDICATION', 'BREAKFAST', TRUE, (id % 4 <> 0) FROM assessment;
+
+-- 취미 (recipient_id = 1, 홍길동)
+INSERT INTO hobby (recipient_id, text, created_at) VALUES
+(1, '텃밭 가꾸기', NOW()),
+(1, '화투 치기', NOW()),
+(1, '라디오 듣기', NOW());
+
+-- 최근 근황 (활성 상태)
+INSERT INTO recent_event (recipient_id, text, added_at, active, removed_at, removed_reason) VALUES
+(1, '손주가 집에 다녀간 일', '2026-07-20', TRUE, NULL, NULL),
+(1, '경로당 화투 대회에 나간 일', '2026-08-01', TRUE, NULL, NULL);
+
+-- 이미 지난 근황 (비활성 상태 — remove 동작 확인용)
+INSERT INTO recent_event (recipient_id, text, added_at, active, removed_at, removed_reason) VALUES
+(1, '병원 정기검진 예약', '2026-07-10', FALSE, '2026-07-25 10:00:00', '검진을 이미 다녀왔다고 언급함');
