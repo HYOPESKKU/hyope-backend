@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.service;
 
+import com.hyope.hyopeserver.annotation.AppLog;
 import com.hyope.hyopeserver.dto.callschedule.CallScheduleRequest;
 import com.hyope.hyopeserver.dto.callschedule.CallScheduleResponse;
 import com.hyope.hyopeserver.entity.CallSchedule;
@@ -8,18 +9,17 @@ import com.hyope.hyopeserver.repository.CallScheduleRepository;
 import com.hyope.hyopeserver.repository.RecipientRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class CallScheduleService {
     private final RecipientRepository recipientRepository;
     private final CallScheduleRepository callScheduleRepository;
 
+    @AppLog("통화 스케줄 생성")
     @Transactional
     public CallScheduleResponse create(Long recipientId, CallScheduleRequest reqDto){
         Recipient recipient = recipientRepository.findById(recipientId)
@@ -45,6 +45,7 @@ public class CallScheduleService {
                 .toList();
     }
 
+    @AppLog("통화 스케줄 수정")
     @Transactional
     public CallScheduleResponse update(Long id, CallScheduleRequest reqDto){
         CallSchedule target = callScheduleRepository.findById(id)
@@ -61,6 +62,7 @@ public class CallScheduleService {
         return CallScheduleResponse.from(updated);
     }
 
+    @AppLog("통화 스케줄 삭제")
     @Transactional
     public CallScheduleResponse delete(Long id){
         CallSchedule target = callScheduleRepository.findById(id)
