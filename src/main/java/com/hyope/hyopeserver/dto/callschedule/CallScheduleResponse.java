@@ -18,13 +18,15 @@ public class CallScheduleResponse {
     private Long recipientId;
     private Boolean isActive;
     private LocalTime scheduledTime;
+    private Integer intervalDays;
 
     public static CallScheduleResponse from(CallSchedule callSchedule){
         return new CallScheduleResponse(
                 callSchedule.getId(),
                 callSchedule.getRecipient().getId(),
                 callSchedule.getIsActive(),
-                callSchedule.getScheduledTime()
+                callSchedule.getScheduledTime(),
+                callSchedule.getIntervalDays()
         );
     }
 }
