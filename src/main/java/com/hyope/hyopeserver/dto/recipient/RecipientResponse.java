@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +29,9 @@ public class RecipientResponse {
     private String phoneNumber;
     private RelationType relationToGuardian;
     private String address;
+    private List<String> hobbies;
+    @JsonProperty("recent_events")
+    private List<String> recentEvents;
 
     public static RecipientResponse from(Recipient recipient){
         return new RecipientResponse(
@@ -39,7 +43,25 @@ public class RecipientResponse {
                 recipient.getGender(),
                 recipient.getPhoneNumber(),
                 recipient.getRelationToGuardian(),
-                recipient.getAddress()
+                recipient.getAddress(),
+                List.of(),
+                List.of()
+        );
+    }
+
+    public static RecipientResponse from(Recipient recipient, List<String> hobbies, List<String> recentEvents){
+        return new RecipientResponse(
+                recipient.getId(),
+                recipient.getGuardian().getId(),
+                recipient.getFirstName(),
+                recipient.getLastName(),
+                recipient.getBirthDate(),
+                recipient.getGender(),
+                recipient.getPhoneNumber(),
+                recipient.getRelationToGuardian(),
+                recipient.getAddress(),
+                hobbies,
+                recentEvents
         );
     }
 }

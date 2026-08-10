@@ -1,5 +1,7 @@
 package com.hyope.hyopeserver.service;
 
+import com.hyope.hyopeserver.dto.profile.ProfileDto;
+import com.hyope.hyopeserver.dto.profile.RecentEventDto;
 import com.hyope.hyopeserver.dto.recipient.RecipientRequest;
 import com.hyope.hyopeserver.dto.recipient.RecipientResponse;
 import com.hyope.hyopeserver.entity.Guardian;
@@ -22,6 +24,7 @@ public class RecipientService {
     private final CallLogService callLogService;
     private final CallScheduleService callScheduleService;
     private final AssessmentService assessmentService;
+    private final RecipientProfileService recipientProfileService;
 
     @Transactional
     public RecipientResponse create(Long guardianId, RecipientRequest reqDto){
@@ -35,7 +38,13 @@ public class RecipientService {
     public RecipientResponse read(Long id){
         Recipient recipient = recipientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 조회 실패: 해당 돌봄 대상자가 없습니다."));
-        return RecipientResponse.from(recipient);
+
+        ProfileDto profile = recipientProfileService.readProfile(id);
+        List<String> eventTexts = profile.recentEvents().stream()
+                .map(RecentEventDto::text)
+                .toList();
+
+        return RecipientResponse.from(recipient, profile.hobbies(), eventTexts);
     }
 
     public List<RecipientResponse> readAll(Long guardianId){
