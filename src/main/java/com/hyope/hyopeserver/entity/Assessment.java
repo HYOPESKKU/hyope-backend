@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Builder
@@ -37,4 +38,7 @@ public class Assessment {
 
     private String summary;
     private String recommendation;
+
+    @ElementCollection
+    private List<String> incompleteCategories;
 }

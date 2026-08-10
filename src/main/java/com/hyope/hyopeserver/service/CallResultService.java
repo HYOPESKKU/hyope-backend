@@ -84,6 +84,7 @@ public class CallResultService {
                 .riskLevel(assessmentData.getRiskLevel())
                 .summary(assessmentData.getSummary())
                 .recommendation(assessmentData.getRecommendation())
+                .incompleteCategories(dto.getIncompleteCategories())
                 .build();
         Assessment savedAssessment = assessmentRepository.save(assessment);
 

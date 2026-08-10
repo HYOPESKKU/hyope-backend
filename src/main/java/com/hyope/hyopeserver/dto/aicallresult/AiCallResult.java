@@ -32,6 +32,9 @@ public class AiCallResult {
     @JsonProperty("profile_updates")
     private List<ProfileUpdateData> profileUpdates;
 
+    @JsonProperty("incomplete_categories")
+    private List<String> incompleteCategories;
+
     @Getter
     @NoArgsConstructor
     public static class CallLogData {
