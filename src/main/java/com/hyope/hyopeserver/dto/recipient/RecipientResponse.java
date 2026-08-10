@@ -27,6 +27,7 @@ public class RecipientResponse {
     private Gender gender;
     private String phoneNumber;
     private RelationType relationToGuardian;
+    private String address;
 
     public static RecipientResponse from(Recipient recipient){
         return new RecipientResponse(
@@ -37,8 +38,8 @@ public class RecipientResponse {
                 recipient.getBirthDate(),
                 recipient.getGender(),
                 recipient.getPhoneNumber(),
-                recipient.getRelationToGuardian()
+                recipient.getRelationToGuardian(),
+                recipient.getAddress()
         );
-
     }
 }

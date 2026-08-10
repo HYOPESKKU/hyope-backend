@@ -28,6 +28,7 @@ public class RecipientRequest {
     private Gender gender;
     private String phoneNumber;
     private RelationType relationToGuardian;
+    private String address;
 
     public Recipient toEntity(Guardian guardian){
         if(!Objects.equals(guardian.getId(), guardianId)){
@@ -42,6 +43,7 @@ public class RecipientRequest {
                 gender,
                 phoneNumber,
                 relationToGuardian,
+                address,
                 LocalDateTime.now()
         );
     }

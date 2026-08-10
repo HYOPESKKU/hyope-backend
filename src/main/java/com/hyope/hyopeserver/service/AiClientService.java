@@ -1,11 +1,12 @@
 package com.hyope.hyopeserver.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.hyope.hyopeserver.dto.profile.ProfileDto;
 import com.hyope.hyopeserver.entity.CallSchedule;
 import com.hyope.hyopeserver.entity.Recipient;
 import com.hyope.hyopeserver.entity.enums.Status;
 import com.hyope.hyopeserver.repository.CallScheduleRepository;
 import io.netty.channel.ChannelOption;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -21,13 +22,17 @@ import java.time.Duration;
 public class AiClientService {
 
     private final CallScheduleRepository callScheduleRepository;
+    private final RecipientProfileService recipientProfileService;
     private final WebClient webClient;
 
     public AiClientService(CallScheduleRepository callScheduleRepository,
-                           @Value("${internal.api-key}") String internalApiKey) {
+                           RecipientProfileService recipientProfileService,
+                           @Value("${internal.api-key}") String internalApiKey,
+                           @Value("${ai.server.base-url:http://localhost:8000}") String aiServerBaseUrl) {
         this.callScheduleRepository = callScheduleRepository;
+        this.recipientProfileService = recipientProfileService;
         this.webClient = WebClient.builder()
-                .baseUrl("http://localhost:8000")
+                .baseUrl(aiServerBaseUrl)
                 .defaultHeader("X-API-KEY", internalApiKey)
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
@@ -39,9 +44,15 @@ public class AiClientService {
 
     public void requestCall(CallSchedule schedule) {
         Recipient recipient = schedule.getRecipient();
+        ProfileDto profile = recipientProfileService.readProfile(recipient.getId());
+
         webClient.post()
                 .uri("/call")
-                .bodyValue(new CallRequestBody(recipient.getId(), recipient.getPhoneNumber()))
+                .bodyValue(new CallRequestBody(
+                        recipient.getId(),
+                        recipient.getPhoneNumber(),
+                        recipient.getAddress(),
+                        profile))
                 .retrieve()
                 .bodyToMono(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
@@ -58,5 +69,10 @@ public class AiClientService {
                 );
     }
 
-    private record CallRequestBody(Long recipientId, String phoneNumber) {}
+    private record CallRequestBody(
+            @JsonProperty("recipient_id") Long recipientId,
+            @JsonProperty("phone_number") String phoneNumber,
+            String address,
+            ProfileDto profile
+    ) {}
 }
