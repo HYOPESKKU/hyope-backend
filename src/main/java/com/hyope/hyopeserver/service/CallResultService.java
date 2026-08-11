@@ -2,6 +2,7 @@ package com.hyope.hyopeserver.service;
 
 import com.hyope.hyopeserver.dto.aicallresult.AiCallResult;
 import com.hyope.hyopeserver.entity.*;
+import com.hyope.hyopeserver.entity.enums.Status;
 import com.hyope.hyopeserver.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class CallResultService {
     private final AssessmentRepository assessmentRepository;
     private final AdherenceRecordRepository adherenceRecordRepository;
     private final RecipientProfileService recipientProfileService;
+    private final NotificationService notificationService;
 
     @Transactional
     public void saveAll(AiCallResult dto) {
@@ -58,6 +60,10 @@ public class CallResultService {
                 .status(callLogData.getStatus())
                 .build();
         CallLog savedCallLog = callLogRepository.save(callLog);
+
+        if (savedCallLog.getStatus() == Status.MISSED || savedCallLog.getStatus() == Status.FAILED) {
+            notificationService.createCallMissedNotification(savedCallLog);
+        }
 
         // 3. CallLogEntry 저장
         dto.getCallLogEntries().forEach(entry -> {

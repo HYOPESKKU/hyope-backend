@@ -4,12 +4,10 @@ import com.hyope.hyopeserver.dto.assessment.AssessmentRequest;
 import com.hyope.hyopeserver.dto.assessment.AssessmentResponse;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
-import com.hyope.hyopeserver.entity.Notification;
-import com.hyope.hyopeserver.entity.enums.NotificationReason;
+import com.hyope.hyopeserver.entity.enums.NotificationType;
 import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import com.hyope.hyopeserver.repository.AssessmentRepository;
 import com.hyope.hyopeserver.repository.CallLogRepository;
-import com.hyope.hyopeserver.repository.NotificationRepository;
 import com.hyope.hyopeserver.repository.RecipientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +27,7 @@ public class AssessmentService {
     private final CallLogRepository callLogRepository;
     private final AssessmentRepository assessmentRepository;
     private final AdherenceRecordService adherenceRecordService;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public AssessmentResponse create(Long callLogId, AssessmentRequest reqDto){
@@ -65,26 +63,23 @@ public class AssessmentService {
 
         if (!isHighRisk && !isSuddenSpike) return;
 
-        NotificationReason reason;
+        NotificationType type;
+        String message;
         if (isHighRisk && isSuddenSpike) {
-            reason = NotificationReason.BOTH;
+            type = NotificationType.BOTH;
+            message = "위험도가 높고, 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
         } else if (isHighRisk) {
-            reason = NotificationReason.HIGH_RISK;
+            type = NotificationType.HIGH_RISK;
+            message = "위험도가 기준치를 초과했습니다. (%.1f점)".formatted(current.getOverallRisk());
         } else {
-            reason = NotificationReason.SUDDEN_SPIKE;
+            type = NotificationType.SUDDEN_SPIKE;
+            message = "위험도가 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
         }
 
-        Notification notification = Notification.builder()
-                .assessment(current)
-                .reason(reason)
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        notificationRepository.save(notification);
-        log.info("알림 생성: recipientId={}, assessmentId={}, reason={}",
-                recipientId, current.getId(), reason);
+        notificationService.create(recipientId, type, message);
+        log.info("알림 생성: recipientId={}, assessmentId={}, type={}",
+                recipientId, current.getId(), type);
     }
-
     public AssessmentResponse read(Long id){
         Assessment assessment = assessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 조회 실패: 해당 평가 지표가 없습니다."));
