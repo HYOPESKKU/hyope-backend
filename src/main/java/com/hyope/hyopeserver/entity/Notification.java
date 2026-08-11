@@ -29,5 +29,12 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private NotificationReason reason;
 
+    @Builder.Default
+    private boolean isRead = false;
+
     private LocalDateTime createdAt;
+
+    public void markRead() {
+        this.isRead = true;
+    }
 }
