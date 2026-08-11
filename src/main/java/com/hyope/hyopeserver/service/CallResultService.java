@@ -77,7 +77,7 @@ public class CallResultService {
             callLogEntryRepository.save(callLogEntry);
         });
 
-        // 4. Assessment 저장
+// 4. Assessment 저장
         AiCallResult.AssessmentData assessmentData = dto.getAssessment();
         Assessment assessment = Assessment.builder()
                 .callLog(savedCallLog)
@@ -90,6 +90,7 @@ public class CallResultService {
                 .riskLevel(assessmentData.getRiskLevel())
                 .summary(assessmentData.getSummary())
                 .recommendation(assessmentData.getRecommendation())
+                .evidence(toEvidenceMap(assessmentData.getEvidence()))
                 .incompleteCategories(dto.getIncompleteCategories())
                 .build();
         Assessment savedAssessment = assessmentRepository.save(assessment);
@@ -110,5 +111,18 @@ public class CallResultService {
         recipientProfileService.applyUpdates(dto.getRecipientId(), dto.getProfileUpdates());
 
         log.info("AI 분석 결과 저장 완료 - recipientId={}, callLogId={}", dto.getRecipientId(), savedCallLog.getId());
+    }
+
+    // AI 서버가 보낸 구조화된 Evidence를 DB에 그대로 저장할 수 있는 Map으로 변환.
+    // evidence가 없는 경우(placeholder 응답 등)는 null 그대로 반환 — DB 컬럼도 NULL 허용.
+    private java.util.Map<String, Object> toEvidenceMap(AiCallResult.Evidence evidence) {
+        if (evidence == null) return null;
+
+        java.util.Map<String, Object> map = new java.util.LinkedHashMap<>();
+        map.put("judgments", evidence.getJudgments());
+        map.put("classifier_ratios", evidence.getClassifierRatios());
+        map.put("classified_utterances", evidence.getClassifiedUtterances());
+        map.put("emergency_count", evidence.getEmergencyCount());
+        return map;
     }
 }
