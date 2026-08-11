@@ -71,7 +71,7 @@ public class CallResultService {
             callLogEntryRepository.save(callLogEntry);
         });
 
-        // 4. Assessment 저장
+// 4. Assessment 저장
         AiCallResult.AssessmentData assessmentData = dto.getAssessment();
         Assessment assessment = Assessment.builder()
                 .callLog(savedCallLog)
@@ -85,6 +85,7 @@ public class CallResultService {
                 .summary(assessmentData.getSummary())
                 .recommendation(assessmentData.getRecommendation())
                 .evidence(toEvidenceMap(assessmentData.getEvidence()))
+                .incompleteCategories(dto.getIncompleteCategories())
                 .build();
         Assessment savedAssessment = assessmentRepository.save(assessment);
 

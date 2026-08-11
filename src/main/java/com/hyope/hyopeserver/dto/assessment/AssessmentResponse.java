@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -32,6 +33,7 @@ public class AssessmentResponse {
     private String summary;
     private String recommendation;
     private Map<String, Object> evidence;
+    private List<String> incompleteCategories;
 
     public static AssessmentResponse from(Assessment assessment){
         return new AssessmentResponse(
@@ -46,7 +48,8 @@ public class AssessmentResponse {
                 assessment.getRiskLevel(),
                 assessment.getSummary(),
                 assessment.getRecommendation(),
-                assessment.getEvidence()
+                assessment.getEvidence(),
+                assessment.getIncompleteCategories()
         );
     }
 }

@@ -28,6 +28,7 @@ public class CallSchedule {
     private Recipient recipient;
 
     private LocalTime scheduledTime;
+    private Integer intervalDays;
     @Column(columnDefinition = "bit(1)")
     private Boolean isActive;
 
@@ -40,6 +41,7 @@ public class CallSchedule {
     public void patch(CallScheduleRequest reqDto, Recipient recipient) {
         if (recipient != null) this.recipient = recipient;
         if (reqDto.getScheduledTime() != null) this.scheduledTime = reqDto.getScheduledTime();
+        if (reqDto.getIntervalDays() != null) this.intervalDays = reqDto.getIntervalDays();
         if (reqDto.getIsActive() != null) this.isActive = reqDto.getIsActive();
     }
 
