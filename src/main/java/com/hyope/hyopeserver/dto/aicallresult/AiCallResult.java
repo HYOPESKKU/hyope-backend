@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -71,6 +72,19 @@ public class AiCallResult {
         private RiskLevel riskLevel;
         private String summary;
         private String recommendation;
+        private Evidence evidence;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class Evidence {
+        private Map<String, String> judgments;
+        @JsonProperty("classifier_ratios")
+        private Map<String, Double> classifierRatios;
+        @JsonProperty("classified_utterances")
+        private int classifiedUtterances;
+        @JsonProperty("emergency_count")
+        private int emergencyCount;
     }
 
     @Getter
@@ -88,8 +102,8 @@ public class AiCallResult {
     @Getter
     @NoArgsConstructor
     public static class ProfileUpdateData {
-        private String action;   // "add" | "remove"
-        private String kind;     // "hobby" | "event"
+        private String action;
+        private String kind;
         private String text;
         @JsonProperty("event_id")
         private String eventId;
