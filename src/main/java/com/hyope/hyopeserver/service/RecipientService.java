@@ -74,6 +74,7 @@ public class RecipientService {
         callLogService.deleteAllByRecipientId(id);
         callScheduleService.deleteAllByRecipientId(id);
         assessmentService.deleteAllByRecipientId(id);
+        recipientProfileService.deleteAllByRecipientId(id);
 
         recipientRepository.delete(target);
         return RecipientResponse.from(target);
