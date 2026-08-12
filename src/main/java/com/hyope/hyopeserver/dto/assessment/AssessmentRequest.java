@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,6 +33,7 @@ public class AssessmentRequest {
     private String summary;
     private String recommendation;
     private Map<String, Object> evidence;
+    private List<String> incompleteCategories;
 
     public Assessment toEntity(CallLog callLog){
         if(!Objects.equals(callLog.getId(), callLogId)){
@@ -49,6 +51,7 @@ public class AssessmentRequest {
                 .summary(summary)
                 .recommendation(recommendation)
                 .evidence(evidence)
+                .incompleteCategories(incompleteCategories)
                 .build();
     }
 }
