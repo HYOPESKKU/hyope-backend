@@ -61,25 +61,35 @@ public class AssessmentService {
             isSuddenSpike = diff >= SUDDEN_SPIKE_THRESHOLD;
         }
 
-        if (!isHighRisk && !isSuddenSpike) return;
+        if (isHighRisk || isSuddenSpike) {
+            NotificationType type;
+            String message;
+            if (isHighRisk && isSuddenSpike) {
+                type = NotificationType.BOTH;
+                message = "위험도가 높고, 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            } else if (isHighRisk) {
+                type = NotificationType.HIGH_RISK;
+                message = "위험도가 기준치를 초과했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            } else {
+                type = NotificationType.SUDDEN_SPIKE;
+                message = "위험도가 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            }
 
-        NotificationType type;
-        String message;
-        if (isHighRisk && isSuddenSpike) {
-            type = NotificationType.BOTH;
-            message = "위험도가 높고, 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
-        } else if (isHighRisk) {
-            type = NotificationType.HIGH_RISK;
-            message = "위험도가 기준치를 초과했습니다. (%.1f점)".formatted(current.getOverallRisk());
-        } else {
-            type = NotificationType.SUDDEN_SPIKE;
-            message = "위험도가 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            notificationService.create(recipientId, type, message);
+            log.info("알림 생성: recipientId={}, assessmentId={}, type={}",
+                    recipientId, current.getId(), type);
         }
 
-        notificationService.create(recipientId, type, message);
-        log.info("알림 생성: recipientId={}, assessmentId={}, type={}",
-                recipientId, current.getId(), type);
+        List<String> incompleteCategories = current.getIncompleteCategories();
+        if (incompleteCategories != null && !incompleteCategories.isEmpty()) {
+            String categoryList = String.join(", ", incompleteCategories);
+            String message = "일부 항목(%s)의 분석 데이터가 수집되지 않았습니다.".formatted(categoryList);
+            notificationService.create(recipientId, NotificationType.INCOMPLETE_ANALYSIS, message);
+            log.info("알림 생성: recipientId={}, assessmentId={}, type=INCOMPLETE_ANALYSIS, categories={}",
+                    recipientId, current.getId(), categoryList);
+        }
     }
+
     public AssessmentResponse read(Long id){
         Assessment assessment = assessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("평가 지표 조회 실패: 해당 평가 지표가 없습니다."));
