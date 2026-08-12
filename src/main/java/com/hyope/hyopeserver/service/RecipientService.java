@@ -70,6 +70,11 @@ public class RecipientService {
     public RecipientResponse delete(Long id){
         Recipient target = recipientRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("돌봄 대상자 정보 삭제 실패: 해당 돌봄 대상자가 없습니다."));
+
+        callLogService.deleteAllByRecipientId(id);
+        callScheduleService.deleteAllByRecipientId(id);
+        assessmentService.deleteAllByRecipientId(id);
+
         recipientRepository.delete(target);
         return RecipientResponse.from(target);
     }
