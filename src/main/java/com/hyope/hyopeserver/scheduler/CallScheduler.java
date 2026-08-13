@@ -52,7 +52,7 @@ public class CallScheduler {
     }
 
     // 매일 23:55에, 오늘 예정된 스케줄이었는데 실제 통화 기록이 없는 대상자에게 알림을 보낸다.
-    @Scheduled(cron = "0 59 23 * * *")
+    @Scheduled(cron = "0 30 21 * * *")
     public void checkDailyCallMissing() {
         LocalDateTime todayStart = LocalDate.now().atStartOfDay();
         List<CallSchedule> activeSchedules = callScheduleRepository.findByIsActiveTrue();
