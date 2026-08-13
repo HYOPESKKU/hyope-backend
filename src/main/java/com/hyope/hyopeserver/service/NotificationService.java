@@ -28,6 +28,11 @@ public class NotificationService {
 
     @Transactional
     public GuardianNotification create(Long recipientId, NotificationType type, String message) {
+        return create(recipientId, type, message, null);
+    }
+
+    @Transactional
+    public GuardianNotification create(Long recipientId, NotificationType type, String message, String detail) {
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new IllegalArgumentException("알림 생성 실패: 대상 돌봄대상자가 없습니다."));
         Guardian guardian = recipient.getGuardian();
@@ -37,6 +42,7 @@ public class NotificationService {
                 .recipient(recipient)
                 .type(type)
                 .message(message)
+                .detail(detail)
                 .build();
 
         return notificationRepository.save(notification);

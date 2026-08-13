@@ -50,7 +50,8 @@ public class AssessmentService {
         notificationService.create(
                 recipientId,
                 NotificationType.NEW_REPORT,
-                "오늘의 리포트가 도착했어요."
+                "오늘의 리포트가 도착했어요.",
+                current.getSummary()
         );
 
         boolean isHighRisk = current.getRiskLevel() == RiskLevel.WARNING

@@ -35,6 +35,9 @@ public class GuardianNotification {
 
     private String message;
 
+    @Column(length = 1000)
+    private String detail;
+
     @Builder.Default
     private boolean isRead = false;
 

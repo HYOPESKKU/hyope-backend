@@ -19,6 +19,7 @@ public class NotificationResponse {
     private Long recipientId;
     private NotificationType type;
     private String message;
+    private String detail;
     private boolean isRead;
     private LocalDateTime createdAt;
 
@@ -28,6 +29,7 @@ public class NotificationResponse {
                 notification.getRecipient().getId(),
                 notification.getType(),
                 notification.getMessage(),
+                notification.getDetail(),
                 notification.isRead(),
                 notification.getCreatedAt()
         );
