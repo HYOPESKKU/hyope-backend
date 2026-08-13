@@ -35,14 +35,20 @@ public class CallResultService {
         if (dto.getCallLog().getStartedAt() == null || dto.getCallLog().getEndedAt() == null) {
             throw new IllegalArgumentException("통화 결과 저장 실패: callLog의 시작/종료 시각이 없습니다.");
         }
-        if (dto.getAssessment() == null) {
-            throw new IllegalArgumentException("통화 결과 저장 실패: assessment 데이터가 없습니다.");
-        }
-        if (dto.getCallLogEntries() == null) {
-            throw new IllegalArgumentException("통화 결과 저장 실패: callLogEntries 데이터가 없습니다.");
-        }
-        if (dto.getAdherenceRecords() == null) {
-            throw new IllegalArgumentException("통화 결과 저장 실패: adherenceRecords 데이터가 없습니다.");
+
+        boolean isCallCompleted = dto.getCallLog().getStatus() != Status.MISSED
+                && dto.getCallLog().getStatus() != Status.FAILED;
+
+        if (isCallCompleted) {
+            if (dto.getAssessment() == null) {
+                throw new IllegalArgumentException("통화 결과 저장 실패: assessment 데이터가 없습니다.");
+            }
+            if (dto.getCallLogEntries() == null) {
+                throw new IllegalArgumentException("통화 결과 저장 실패: callLogEntries 데이터가 없습니다.");
+            }
+            if (dto.getAdherenceRecords() == null) {
+                throw new IllegalArgumentException("통화 결과 저장 실패: adherenceRecords 데이터가 없습니다.");
+            }
         }
 
         // 1. Recipient 조회
@@ -63,6 +69,8 @@ public class CallResultService {
 
         if (savedCallLog.getStatus() == Status.MISSED || savedCallLog.getStatus() == Status.FAILED) {
             notificationService.createCallMissedNotification(savedCallLog);
+            log.info("통화 실패/부재중 알림 생성 - recipientId={}, callLogId={}", dto.getRecipientId(), savedCallLog.getId());
+            return;
         }
 
         // 3. CallLogEntry 저장
