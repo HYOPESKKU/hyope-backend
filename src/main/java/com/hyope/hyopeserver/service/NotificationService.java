@@ -57,7 +57,7 @@ public class NotificationService {
                 .guardian(guardian)
                 .recipient(recipient)
                 .type(NotificationType.CALL_MISSED)
-                .message("%s%s님과의 통화가 이루어지지 않았습니다.".formatted(
+                .message("%s%s님이 전화를 받지 않았습니다.".formatted(
                         recipient.getLastName(), recipient.getFirstName()))
                 .build();
 

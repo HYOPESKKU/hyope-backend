@@ -61,6 +61,7 @@ public class CallScheduler {
 
         for (CallSchedule schedule : activeSchedules) {
             Long recipientId = schedule.getRecipient().getId();
+            String recipientName = schedule.getRecipient().getLastName() + schedule.getRecipient().getFirstName();
 
             boolean hasCallToday = callLogRepository
                     .existsByRecipientIdAndStartedAtAfter(recipientId, todayStart);
@@ -69,7 +70,7 @@ public class CallScheduler {
                 notificationService.create(
                         recipientId,
                         NotificationType.DAILY_CALL_MISSING,
-                        "오늘 예정된 통화가 이루어지지 않았습니다."
+                        "오늘 %s님과 예정된 통화가 진행되지 않았습니다.".formatted(recipientName)
                 );
                 log.info("일일 통화 누락 알림 생성 - recipientId={}", recipientId);
             }
