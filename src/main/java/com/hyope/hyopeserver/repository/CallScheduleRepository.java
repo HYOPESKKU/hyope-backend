@@ -10,4 +10,5 @@ public interface CallScheduleRepository extends JpaRepository<CallSchedule, Long
     List<CallSchedule> findByRecipientId(Long recipientId);
     void deleteByRecipientId(Long recipientId);
     List<CallSchedule> findByScheduledTimeBetweenAndIsActiveTrue(LocalTime from, LocalTime to);
+    List<CallSchedule> findByIsActiveTrue();
 }
