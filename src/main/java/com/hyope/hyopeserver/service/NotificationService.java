@@ -76,4 +76,16 @@ public class NotificationService {
         notification.markRead();
         return notification;
     }
+
+    @Transactional
+    public void delete(Long id, Long guardianId) {
+        GuardianNotification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("알림 삭제 실패: 해당 알림이 없습니다."));
+
+        if (!notification.getGuardian().getId().equals(guardianId)) {
+            throw new IllegalArgumentException("알림 삭제 실패: 본인의 알림만 삭제할 수 있습니다.");
+        }
+
+        notificationRepository.delete(notification);
+    }
 }

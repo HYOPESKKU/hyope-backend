@@ -34,4 +34,11 @@ public class NotificationController {
         GuardianNotification updated = notificationService.markRead(id, guardian.getId());
         return ResponseEntity.ok(NotificationResponse.from(updated));
     }
+
+    @DeleteMapping("/notifications/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
+        Guardian guardian = guardianService.readByLoginId(authentication.getName());
+        notificationService.delete(id, guardian.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
