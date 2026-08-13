@@ -47,6 +47,12 @@ public class AssessmentService {
     }
 
     private void checkAndCreateNotification(Assessment current, Long recipientId) {
+        notificationService.create(
+                recipientId,
+                NotificationType.NEW_REPORT,
+                "오늘의 리포트가 도착했어요."
+        );
+
         boolean isHighRisk = current.getRiskLevel() == RiskLevel.WARNING
                 || current.getRiskLevel() == RiskLevel.HIGH;
 
