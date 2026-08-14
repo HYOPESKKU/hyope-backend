@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.hyope.hyopeserver.entity.enums.Slot;
 
 import java.time.Duration;
 
@@ -104,11 +105,13 @@ public class CallResultService {
         Assessment savedAssessment = assessmentRepository.save(assessment);
 
         // 5. AdherenceRecord 저장
+        // 통화가 하루 한 번뿐이라 slot(아침/점심/저녁)을 정확히 구분할 근거가 없다.
+        // AI서버가 어떤 slot을 보내든 하루 단위 하나로 통일해서 저장한다.
         dto.getAdherenceRecords().forEach(record -> {
             AdherenceRecord adherenceRecord = AdherenceRecord.builder()
                     .assessment(savedAssessment)
                     .adherenceType(record.getAdherenceType())
-                    .slot(record.getSlot())
+                    .slot(Slot.BREAKFAST)
                     .isNeeded(record.isNeeded())
                     .isDone(record.isDone())
                     .build();
