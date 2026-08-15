@@ -1,5 +1,6 @@
 package com.hyope.hyopeserver.service;
 
+import com.hyope.hyopeserver.dto.notification.NotificationResponse;
 import com.hyope.hyopeserver.entity.CallLog;
 import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.entity.GuardianNotification;
@@ -8,12 +9,15 @@ import com.hyope.hyopeserver.entity.enums.NotificationType;
 import com.hyope.hyopeserver.repository.GuardianRepository;
 import com.hyope.hyopeserver.repository.NotificationRepository;
 import com.hyope.hyopeserver.repository.RecipientRepository;
+import com.hyope.hyopeserver.websocket.NotificationSocketHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -21,6 +25,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final GuardianRepository guardianRepository;
     private final RecipientRepository recipientRepository;
+    private final NotificationSocketHandler notificationSocketHandler;
 
     public List<GuardianNotification> readAllForGuardian(Long guardianId) {
         return notificationRepository.findByGuardianIdOrderByCreatedAtDesc(guardianId);
@@ -37,6 +42,11 @@ public class NotificationService {
                 .orElseThrow(() -> new IllegalArgumentException("알림 생성 실패: 대상 돌봄대상자가 없습니다."));
         Guardian guardian = recipient.getGuardian();
 
+        if (!isEnabled(guardian, type)) {
+            log.info("알림 생성 건너뜀(설정 꺼짐) - guardianId={}, type={}", guardian.getId(), type);
+            return null;
+        }
+
         GuardianNotification notification = GuardianNotification.builder()
                 .guardian(guardian)
                 .recipient(recipient)
@@ -45,13 +55,20 @@ public class NotificationService {
                 .detail(detail)
                 .build();
 
-        return notificationRepository.save(notification);
+        GuardianNotification saved = notificationRepository.save(notification);
+        notificationSocketHandler.push(guardian.getId(), NotificationResponse.from(saved));
+        return saved;
     }
 
     @Transactional
     public GuardianNotification createCallMissedNotification(CallLog callLog) {
         Recipient recipient = callLog.getRecipient();
         Guardian guardian = recipient.getGuardian();
+
+        if (!isEnabled(guardian, NotificationType.CALL_MISSED)) {
+            log.info("알림 생성 건너뜀(설정 꺼짐) - guardianId={}, type=CALL_MISSED", guardian.getId());
+            return null;
+        }
 
         GuardianNotification notification = GuardianNotification.builder()
                 .guardian(guardian)
@@ -61,7 +78,9 @@ public class NotificationService {
                         recipient.getLastName(), recipient.getFirstName()))
                 .build();
 
-        return notificationRepository.save(notification);
+        GuardianNotification saved = notificationRepository.save(notification);
+        notificationSocketHandler.push(guardian.getId(), NotificationResponse.from(saved));
+        return saved;
     }
 
     @Transactional
@@ -87,5 +106,17 @@ public class NotificationService {
         }
 
         notificationRepository.delete(notification);
+    }
+
+    // 알림 설정 화면의 3개 토글(오늘의 소식/위험도 변동/위급상황)이 어떤 NotificationType을
+    // 다스리는지 — 프론트 NotificationSettingsScreen의 _isDailyNews/_isRiskChange 분류와
+    // 맞춘다(단, EMERGENCY는 거기선 "위험도 변동" 섹션에 같이 나열되지만, 설정 토글은 별도라
+    // 여기선 emergency 전용으로 뗀다).
+    private boolean isEnabled(Guardian guardian, NotificationType type) {
+        return switch (type) {
+            case CALL_MISSED, CALL_FAILED, NEW_REPORT, DAILY_CALL_MISSING -> guardian.isDailyNewsAlertEnabled();
+            case HIGH_RISK, SUDDEN_SPIKE, BOTH, INCOMPLETE_ANALYSIS -> guardian.isRiskChangeAlertEnabled();
+            case EMERGENCY -> guardian.isEmergencyAlertEnabled();
+        };
     }
 }

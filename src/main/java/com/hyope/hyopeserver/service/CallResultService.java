@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hyope.hyopeserver.entity.enums.Slot;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -24,6 +25,7 @@ public class CallResultService {
     private final AdherenceRecordRepository adherenceRecordRepository;
     private final RecipientProfileService recipientProfileService;
     private final NotificationService notificationService;
+    private final AssessmentService assessmentService;
 
     @Transactional
     public void saveAll(AiCallResult dto) {
@@ -32,9 +34,6 @@ public class CallResultService {
         }
         if (dto.getCallLog() == null) {
             throw new IllegalArgumentException("통화 결과 저장 실패: callLog 데이터가 없습니다.");
-        }
-        if (dto.getCallLog().getStartedAt() == null || dto.getCallLog().getEndedAt() == null) {
-            throw new IllegalArgumentException("통화 결과 저장 실패: callLog의 시작/종료 시각이 없습니다.");
         }
 
         boolean isCallCompleted = dto.getCallLog().getStatus() != Status.MISSED
@@ -57,12 +56,23 @@ public class CallResultService {
                 .orElseThrow(() -> new IllegalArgumentException("Recipient not found: " + dto.getRecipientId()));
 
         // 2. CallLog 저장
+        // AI 서버가 통화 시작/종료 시각을 못 채운 채 보내는 경우(발신 자체가 실패했거나,
+        // 연결은 됐지만 응답을 하나도 못 받고 끊긴 등)가 있다. 예전엔 여기서 바로 예외를 던져
+        // 요청 전체가 500으로 실패했고, 그러면 통화 로그도 못 남고 알림도 안 만들어진 채
+        // worker.py가 같은 요청을 영원히 재시도했다. 시각이 비어 있으면 저장 시각으로
+        // 대체해서라도 통화 기록/알림은 반드시 남긴다.
         AiCallResult.CallLogData callLogData = dto.getCallLog();
-        int durationSec = (int) Duration.between(callLogData.getStartedAt(), callLogData.getEndedAt()).getSeconds();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startedAt = callLogData.getStartedAt() != null ? callLogData.getStartedAt() : now;
+        LocalDateTime endedAt = callLogData.getEndedAt() != null ? callLogData.getEndedAt() : now;
+        if (callLogData.getStartedAt() == null || callLogData.getEndedAt() == null) {
+            log.warn("callLog의 시작/종료 시각이 없어 저장 시각으로 대체합니다 - recipientId={}", dto.getRecipientId());
+        }
+        int durationSec = (int) Duration.between(startedAt, endedAt).getSeconds();
         CallLog callLog = CallLog.builder()
                 .recipient(recipient)
-                .startedAt(callLogData.getStartedAt())
-                .endedAt(callLogData.getEndedAt())
+                .startedAt(startedAt)
+                .endedAt(endedAt)
                 .durationSec(durationSec)
                 .status(callLogData.getStatus())
                 .build();
@@ -103,6 +113,11 @@ public class CallResultService {
                 .incompleteCategories(dto.getIncompleteCategories())
                 .build();
         Assessment savedAssessment = assessmentRepository.save(assessment);
+
+        // 리포트 도착/위험도 급등/일부 항목 미수집(연결은 됐지만 유의미한 대화가
+        // 오가지 못한 경우 등) 알림 — /call-logs/{id}/assessments 경로(AssessmentService.create)와
+        // 동일한 판정 로직을 그대로 재사용해, AI 서버가 보낸 통화 결과에도 똑같이 적용한다.
+        assessmentService.checkAndCreateNotification(savedAssessment, recipient.getId());
 
         // 5. AdherenceRecord 저장
         // 통화가 하루 한 번뿐이라 slot(아침/점심/저녁)을 정확히 구분할 근거가 없다.

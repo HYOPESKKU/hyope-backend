@@ -46,7 +46,9 @@ public class AssessmentService {
         return AssessmentResponse.from(created);
     }
 
-    private void checkAndCreateNotification(Assessment current, Long recipientId) {
+    // CallResultService(AI 서버 통화 결과 수신 경로)에서도 같은 리포트/위험도/미완료
+    // 알림 판정을 재사용해야 해서 package-private으로 열어둔다.
+    void checkAndCreateNotification(Assessment current, Long recipientId) {
         notificationService.create(
                 recipientId,
                 NotificationType.NEW_REPORT,

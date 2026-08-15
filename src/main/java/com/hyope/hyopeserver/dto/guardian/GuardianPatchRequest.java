@@ -18,6 +18,9 @@ public class GuardianPatchRequest {
     private String phoneNumber;
     private String email;
     private Gender gender;
+    private Boolean dailyNewsAlertEnabled;
+    private Boolean riskChangeAlertEnabled;
+    private Boolean emergencyAlertEnabled;
     // loginId, password, role 없음 → 이 경로로는 절대 못 바꿈
 
     public Guardian toEntity() {
@@ -28,6 +31,9 @@ public class GuardianPatchRequest {
                 .phoneNumber(phoneNumber)
                 .email(email)
                 .gender(gender)
+                .dailyNewsAlertEnabled(dailyNewsAlertEnabled)
+                .riskChangeAlertEnabled(riskChangeAlertEnabled)
+                .emergencyAlertEnabled(emergencyAlertEnabled)
                 .build();
     }
 }

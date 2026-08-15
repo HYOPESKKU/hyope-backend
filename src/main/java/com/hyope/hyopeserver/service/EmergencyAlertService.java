@@ -41,12 +41,15 @@ public class EmergencyAlertService {
         String detail = DETAIL_FORMAT.formatted(
                 recipientName, req.getSignal(), LocalDateTime.now().format(DETECTED_AT_FORMAT));
 
-        notificationService.create(req.getRecipientId(), NotificationType.EMERGENCY, TITLE, detail);
-        log.info("위급 알림 생성: recipientId={}, signal={}, severity={}",
-                req.getRecipientId(), req.getSignal(), req.getSeverity());
+        boolean notified = notificationService.create(req.getRecipientId(), NotificationType.EMERGENCY, TITLE, detail) != null;
+        log.info("위급 알림 생성: recipientId={}, signal={}, severity={}, notified={}",
+                req.getRecipientId(), req.getSignal(), req.getSeverity(), notified);
 
+        // 보호자가 위급상황 알림을 꺼둔 경우(notified=false)엔 전화번호를 아예 안 돌려준다 —
+        // ai-server(worker.py)는 이 필드가 없으면 SMS를 안 보내므로, 토글 하나로 앱 알림과
+        // 문자 발송이 같이 꺼진다.
         return new EmergencyAlertResponse(
-                guardian.getPhoneNumber(),
+                notified ? guardian.getPhoneNumber() : null,
                 "%s%s".formatted(guardian.getLastName(), guardian.getFirstName()),
                 recipientName
         );

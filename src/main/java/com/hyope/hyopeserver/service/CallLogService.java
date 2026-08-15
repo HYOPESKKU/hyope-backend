@@ -56,6 +56,8 @@ public class CallLogService {
     public CallLogResponse delete(Long id){
         CallLog target = callLogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("통화 로그 삭제 실패: 해당 통화 로그가 없습니다."));
+        callLogEntryService.deleteAllByCallLogId(id);
+        assessmentService.deleteByCallLogId(id);
         callLogRepository.delete(target);
         return CallLogResponse.from(target);
     }
