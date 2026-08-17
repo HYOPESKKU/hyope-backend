@@ -51,7 +51,6 @@ public class AiClientService {
                 .bodyValue(new CallRequestBody(
                         recipient.getId(),
                         recipient.getPhoneNumber(),
-                        recipient.getAddress(),
                         profile))
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -72,7 +71,6 @@ public class AiClientService {
     private record CallRequestBody(
             @JsonProperty("recipient_id") Long recipientId,
             @JsonProperty("phone_number") String phoneNumber,
-            String address,
             ProfileDto profile
     ) {}
 }

@@ -110,6 +110,8 @@ public class AiCallResult {
         private String text;
         @JsonProperty("event_id")
         private String eventId;
+        @JsonProperty("hobby_name")
+        private String hobbyName;
         private String reason;
     }
 }

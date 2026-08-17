@@ -42,7 +42,12 @@ public class RecipientProfileService {
                         e.getAddedAt()))
                 .toList();
 
-        return new ProfileDto(hobbies, events);
+        // ai-server(integrations/dispatch.py)는 도움처 검색 시 profile.address만 읽는다 — 최상위
+        // address 필드는 안 본다(AiClientService 참고). 여기서 profile 안에 넣어서 그 계약을 맞춘다.
+        Recipient recipient = recipientRepository.findById(recipientId)
+                .orElseThrow(() -> new IllegalArgumentException("프로필 조회 실패: 해당 돌봄 대상자가 없습니다."));
+
+        return new ProfileDto(hobbies, events, recipient.getAddress());
     }
 
     /** 통화 종료 후 AI 서버가 보내준 profile_updates 반영 */
@@ -57,7 +62,7 @@ public class RecipientProfileService {
             if ("add".equals(update.getAction())) {
                 handleAdd(recipient, update);
             } else if ("remove".equals(update.getAction())) {
-                handleRemove(update);
+                handleRemove(recipientId, update);
             } else {
                 log.warn("알 수 없는 action: {}", update.getAction());
             }
@@ -89,29 +94,38 @@ public class RecipientProfileService {
         }
     }
 
-    private void handleRemove(AiCallResult.ProfileUpdateData update) {
-        if (update.getEventId() == null) {
-            log.warn("remove 요청에 event_id가 없습니다.");
-            return;
-        }
-
-        Long id;
-        try {
-            id = Long.parseLong(update.getEventId());
-        } catch (NumberFormatException e) {
-            log.warn("event_id 파싱 실패: {}", update.getEventId());
-            return;
-        }
-
+    // * ai-server(agent/stages.py의 build_interest_questions/build_event_questions)는 취미/근황의
+    // * 숫자 DB id를 모델에게 노출한 적이 없다 — 모델은 어르신이 말한 텍스트 그대로만 안다. 그래서
+    // * hobby_name/event_id(둘 다 실질적으로 텍스트)로 recipient 범위 안에서 매칭해 지운다. 숫자 id
+    // * 파싱을 시도하던 예전 방식은 항상 실패해서 제거 요청이 조용히 아무 효과도 없었다.
+    private void handleRemove(Long recipientId, AiCallResult.ProfileUpdateData update) {
         if ("hobby".equals(update.getKind())) {
-            hobbyRepository.deleteById(id);
-            log.info("취미 제거: hobbyId={}, reason={}", id, update.getReason());
+            String hobbyName = update.getHobbyName();
+            if (hobbyName == null || hobbyName.isBlank()) {
+                log.warn("취미 remove 요청에 hobby_name이 없습니다.");
+                return;
+            }
+            List<Hobby> matches = hobbyRepository.findByRecipientIdAndText(recipientId, hobbyName);
+            if (matches.isEmpty()) {
+                log.warn("취미 제거 실패: 일치하는 항목 없음 — recipientId={}, hobby_name={}", recipientId, hobbyName);
+                return;
+            }
+            hobbyRepository.deleteAll(matches);
+            log.info("취미 제거: recipientId={}, hobby_name={}, reason={}", recipientId, hobbyName, update.getReason());
 
         } else if ("event".equals(update.getKind())) {
-            recentEventRepository.findById(id).ifPresent(event -> {
-                event.remove(update.getReason());
-                log.info("근황 비활성화: eventId={}, reason={}", id, update.getReason());
-            });
+            String eventText = update.getEventId();
+            if (eventText == null || eventText.isBlank()) {
+                log.warn("근황 remove 요청에 event_id가 없습니다.");
+                return;
+            }
+            List<RecentEvent> matches = recentEventRepository.findByRecipientIdAndTextAndActiveTrue(recipientId, eventText);
+            if (matches.isEmpty()) {
+                log.warn("근황 비활성화 실패: 일치하는 항목 없음 — recipientId={}, event_id={}", recipientId, eventText);
+                return;
+            }
+            matches.forEach(event -> event.remove(update.getReason()));
+            log.info("근황 비활성화: recipientId={}, event_id={}, reason={}", recipientId, eventText, update.getReason());
         }
     }
 

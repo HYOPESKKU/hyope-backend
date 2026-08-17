@@ -6,5 +6,6 @@ import java.util.List;
 
 public record ProfileDto(
         List<String> hobbies,
-        @JsonProperty("recent_events") List<RecentEventDto> recentEvents
+        @JsonProperty("recent_events") List<RecentEventDto> recentEvents,
+        String address
 ) {}
