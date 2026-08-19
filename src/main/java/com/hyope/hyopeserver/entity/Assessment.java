@@ -39,6 +39,7 @@ public class Assessment {
     @Enumerated(EnumType.STRING)
     private RiskLevel riskLevel;
 
+    @Column(columnDefinition = "TEXT")
     private String summary;
     private String recommendation;
 
