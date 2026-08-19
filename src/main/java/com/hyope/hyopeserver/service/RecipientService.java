@@ -25,6 +25,7 @@ public class RecipientService {
     private final CallScheduleService callScheduleService;
     private final AssessmentService assessmentService;
     private final RecipientProfileService recipientProfileService;
+    private final AiClientService aiClientService;
 
     @Transactional
     public RecipientResponse create(Long guardianId, RecipientRequest reqDto){
@@ -78,6 +79,16 @@ public class RecipientService {
 
         recipientRepository.delete(target);
         return RecipientResponse.from(target);
+    }
+
+    // * "지금 바로 통화걸기" — 예약(CallSchedule) 없이 즉시 AiClientService.requestCall을 태운다.
+    // * CallScheduler(scheduler/CallScheduler.java)가 매분 스케줄을 폴링해 도는 것과 같은 전송
+    // * 로직을 그대로 재사용하되(AiClientService.requestCall(Recipient) 참고), 실패해도 존재하지
+    // * 않는 스케줄의 lastCallStatus를 갱신하려 들지 않는다.
+    public void callNow(Long id){
+        Recipient recipient = recipientRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("즉시 통화 요청 실패: 해당 돌봄 대상자가 없습니다."));
+        aiClientService.requestCall(recipient);
     }
 
     @Transactional
