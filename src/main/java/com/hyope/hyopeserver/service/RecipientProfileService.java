@@ -3,6 +3,7 @@ package com.hyope.hyopeserver.service;
 import com.hyope.hyopeserver.dto.aicallresult.AiCallResult;
 import com.hyope.hyopeserver.dto.profile.ProfileDto;
 import com.hyope.hyopeserver.dto.profile.RecentEventDto;
+import com.hyope.hyopeserver.entity.Guardian;
 import com.hyope.hyopeserver.entity.Hobby;
 import com.hyope.hyopeserver.entity.RecentEvent;
 import com.hyope.hyopeserver.entity.Recipient;
@@ -47,7 +48,16 @@ public class RecipientProfileService {
         Recipient recipient = recipientRepository.findById(recipientId)
                 .orElseThrow(() -> new IllegalArgumentException("프로필 조회 실패: 해당 돌봄 대상자가 없습니다."));
 
-        return new ProfileDto(hobbies, events, recipient.getAddress());
+        // 통화 종료 요약 SMS 수신처 — EmergencyAlertService와 동일한 소스(recipient.getGuardian())를
+        // 재사용한다. 위급 알림과 달리 이 값은 매 통화 요청마다 조회되는 경로라 guardian 미등록
+        // 케이스를 방어적으로 처리한다(없으면 null — ai-server가 SMS 발송을 건너뜀).
+        Guardian guardian = recipient.getGuardian();
+        String guardianPhoneNumber = guardian != null ? guardian.getPhoneNumber() : null;
+        String recipientName = "%s%s".formatted(
+                recipient.getLastName() != null ? recipient.getLastName() : "",
+                recipient.getFirstName() != null ? recipient.getFirstName() : "");
+
+        return new ProfileDto(hobbies, events, recipient.getAddress(), guardianPhoneNumber, recipientName);
     }
 
     /** 통화 종료 후 AI 서버가 보내준 profile_updates 반영 */
