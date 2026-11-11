@@ -4,6 +4,8 @@ import com.hyope.hyopeserver.dto.assessment.AssessmentRequest;
 import com.hyope.hyopeserver.dto.assessment.AssessmentResponse;
 import com.hyope.hyopeserver.entity.Assessment;
 import com.hyope.hyopeserver.entity.CallLog;
+import com.hyope.hyopeserver.entity.enums.NotificationType;
+import com.hyope.hyopeserver.entity.enums.RiskLevel;
 import com.hyope.hyopeserver.repository.AssessmentRepository;
 import com.hyope.hyopeserver.repository.CallLogRepository;
 import com.hyope.hyopeserver.repository.RecipientRepository;
@@ -12,16 +14,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AssessmentService {
+    private static final double SUDDEN_SPIKE_THRESHOLD = 1.5;
+
     private final RecipientRepository recipientRepository;
     private final CallLogRepository callLogRepository;
     private final AssessmentRepository assessmentRepository;
     private final AdherenceRecordService adherenceRecordService;
+    private final NotificationService notificationService;
 
     @Transactional
     public AssessmentResponse create(Long callLogId, AssessmentRequest reqDto){
@@ -34,7 +40,63 @@ public class AssessmentService {
 
         Assessment assessment = reqDto.toEntity(callLog);
         Assessment created = assessmentRepository.save(assessment);
+
+        checkAndCreateNotification(created, callLog.getRecipient().getId());
+
         return AssessmentResponse.from(created);
+    }
+
+    // CallResultService(AI 서버 통화 결과 수신 경로)에서도 같은 리포트/위험도/미완료
+    // 알림 판정을 재사용해야 해서 package-private으로 열어둔다.
+    void checkAndCreateNotification(Assessment current, Long recipientId) {
+        notificationService.create(
+                recipientId,
+                NotificationType.NEW_REPORT,
+                "오늘의 리포트가 도착했어요.",
+                current.getSummary()
+        );
+
+        boolean isHighRisk = current.getRiskLevel() == RiskLevel.WARNING
+                || current.getRiskLevel() == RiskLevel.HIGH;
+
+        List<Assessment> previousList = assessmentRepository
+                .findByCallLog_Recipient_IdAndMeasuredAtBeforeOrderByMeasuredAtDesc(
+                        recipientId, current.getMeasuredAt());
+
+        boolean isSuddenSpike = false;
+        if (!previousList.isEmpty()) {
+            double previousRisk = previousList.get(0).getOverallRisk();
+            double diff = current.getOverallRisk() - previousRisk;
+            isSuddenSpike = diff >= SUDDEN_SPIKE_THRESHOLD;
+        }
+
+        if (isHighRisk || isSuddenSpike) {
+            NotificationType type;
+            String message;
+            if (isHighRisk && isSuddenSpike) {
+                type = NotificationType.BOTH;
+                message = "위험도가 높고, 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            } else if (isHighRisk) {
+                type = NotificationType.HIGH_RISK;
+                message = "위험도가 기준치를 초과했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            } else {
+                type = NotificationType.SUDDEN_SPIKE;
+                message = "위험도가 전일 대비 급격히 상승했습니다. (%.1f점)".formatted(current.getOverallRisk());
+            }
+
+            notificationService.create(recipientId, type, message);
+            log.info("알림 생성: recipientId={}, assessmentId={}, type={}",
+                    recipientId, current.getId(), type);
+        }
+
+        List<String> incompleteCategories = current.getIncompleteCategories();
+        if (incompleteCategories != null && !incompleteCategories.isEmpty()) {
+            String categoryList = String.join(", ", incompleteCategories);
+            String message = "일부 항목(%s)의 분석 데이터가 수집되지 않았습니다.".formatted(categoryList);
+            notificationService.create(recipientId, NotificationType.INCOMPLETE_ANALYSIS, message);
+            log.info("알림 생성: recipientId={}, assessmentId={}, type=INCOMPLETE_ANALYSIS, categories={}",
+                    recipientId, current.getId(), categoryList);
+        }
     }
 
     public AssessmentResponse read(Long id){

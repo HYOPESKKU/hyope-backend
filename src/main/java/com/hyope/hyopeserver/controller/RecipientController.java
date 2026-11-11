@@ -37,6 +37,12 @@ public class RecipientController {
         RecipientResponse updated = recipientService.update(id, reqDto);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
+    // "지금 바로 통화걸기" — 예약 시간과 무관하게 즉시 통화를 트리거한다.
+    @PostMapping("/recipients/{id}/call-now")
+    public ResponseEntity<Void> callNow(@PathVariable Long id){
+        recipientService.callNow(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
     //DELETE
     @DeleteMapping("/recipients/{id}")
     public ResponseEntity<RecipientResponse> delete(@PathVariable Long id){

@@ -39,6 +39,8 @@ public class Recipient {
     @Enumerated(EnumType.STRING)
     private RelationType relationToGuardian;
 
+    private String address;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
@@ -49,6 +51,6 @@ public class Recipient {
         if(reqDto.getGender() != null) this.gender = reqDto.getGender();
         if(reqDto.getPhoneNumber() != null) this.phoneNumber = reqDto.getPhoneNumber();
         if(reqDto.getRelationToGuardian() != null) this.relationToGuardian = reqDto.getRelationToGuardian();
+        if(reqDto.getAddress() != null) this.address = reqDto.getAddress();
     }
 }
-

@@ -24,6 +24,9 @@ public class GuardianResponse {
     private Gender gender;
     private LocalDate birthDate;
     private Role role;
+    private boolean dailyNewsAlertEnabled;
+    private boolean riskChangeAlertEnabled;
+    private boolean emergencyAlertEnabled;
 
     public static GuardianResponse createGuardianResponseDto(Guardian guardian){
         return new GuardianResponse(
@@ -35,7 +38,10 @@ public class GuardianResponse {
                 guardian.getEmail(),
                 guardian.getGender(),
                 guardian.getBirthDate(),
-                guardian.getRole()
+                guardian.getRole(),
+                guardian.isDailyNewsAlertEnabled(),
+                guardian.isRiskChangeAlertEnabled(),
+                guardian.isEmergencyAlertEnabled()
         );
     }
 }

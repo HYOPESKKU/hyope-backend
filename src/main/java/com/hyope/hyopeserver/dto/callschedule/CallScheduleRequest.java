@@ -21,6 +21,7 @@ public class CallScheduleRequest {
     private Long recipientId;
 
     private LocalTime scheduledTime;
+    private Integer intervalDays;
     private Boolean isActive;
 
     public CallSchedule toEntity(Recipient recipient){
@@ -31,6 +32,7 @@ public class CallScheduleRequest {
                 null,
                 recipient,
                 scheduledTime,
+                intervalDays != null ? intervalDays : 1,
                 isActive != null ? isActive : true,
                 null,
                 LocalDateTime.now()

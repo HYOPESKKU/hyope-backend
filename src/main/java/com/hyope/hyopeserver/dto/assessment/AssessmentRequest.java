@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -30,6 +32,8 @@ public class AssessmentRequest {
     private RiskLevel riskLevel;
     private String summary;
     private String recommendation;
+    private Map<String, Object> evidence;
+    private List<String> incompleteCategories;
 
     public Assessment toEntity(CallLog callLog){
         if(!Objects.equals(callLog.getId(), callLogId)){
@@ -46,7 +50,8 @@ public class AssessmentRequest {
                 .riskLevel(riskLevel)
                 .summary(summary)
                 .recommendation(recommendation)
+                .evidence(evidence)
+                .incompleteCategories(incompleteCategories)
                 .build();
     }
 }
-
