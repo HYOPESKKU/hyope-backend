@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 public class CallLogEntryResponse {
+    private Long id;
+
     @JsonProperty("call_log_id")
     private Long callLogId;
 
@@ -24,6 +26,7 @@ public class CallLogEntryResponse {
 
     public static CallLogEntryResponse from(CallLogEntry callLogEntry){
         return new CallLogEntryResponse(
+            callLogEntry.getId(),
             callLogEntry.getCallLog().getId(),
             callLogEntry.getSequence(),
             callLogEntry.getQuestion(),

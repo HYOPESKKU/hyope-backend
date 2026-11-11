@@ -39,9 +39,12 @@ public class AiClientService {
 
     public void requestCall(CallSchedule schedule) {
         Recipient recipient = schedule.getRecipient();
+        String guardianPhoneNumber = recipient.getGuardian() != null
+                ? recipient.getGuardian().getPhoneNumber()
+                : "";
         webClient.post()
                 .uri("/call")
-                .bodyValue(new CallRequestBody(recipient.getId(), recipient.getPhoneNumber()))
+                .bodyValue(new CallRequestBody(recipient.getId(), recipient.getPhoneNumber(), guardianPhoneNumber))
                 .retrieve()
                 .bodyToMono(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
@@ -58,5 +61,5 @@ public class AiClientService {
                 );
     }
 
-    private record CallRequestBody(Long recipientId, String phoneNumber) {}
+    private record CallRequestBody(Long recipientId, String phoneNumber, String guardianPhoneNumber) {}
 }
